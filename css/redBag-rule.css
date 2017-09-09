@@ -1,0 +1,17 @@
+/* LESS Document */
+/**********Instruction**********/
+.mui-scroll {
+  padding: 0 .12rem;
+}
+.redBag-rule h3 {
+  font-size: .15rem;
+  line-height: .35rem;
+  color: #333;
+  margin-top: .1rem;
+}
+.redBag-rule p {
+  font-size: .13rem;
+  line-height: .18rem;
+  color: #666;
+  margin-top: .1rem;
+}

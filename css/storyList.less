@@ -1,0 +1,145 @@
+/* LESS Document */
+
+/**********Instruction**********/
+//=============================================================================
+// @des:            css storyList files
+// @author:       	chengwei
+// @time:           2016-5-16
+// @lastTime     	2015-5-16
+// @version         0.1 beta
+// ============================================================================
+.story-title{
+    position: relative;
+	width:100%;
+	height:1.4rem;
+	padding:.2rem .13rem 0;
+	background:#fff;
+}
+.story-title>*{
+	float:left;
+}
+.story-title img{
+    width:1rem;
+    height:1rem;
+    box-shadow:0 0 2px 1px rgba(220,195,195,1);
+    padding:.03rem;
+    background:#fff;
+}
+.story-title i{
+    position: absolute;
+    left: .28rem;
+    top: .28rem;
+    width:.3rem;
+    height:.3rem;
+    background: url(../imgs/jingdianbofang@2x.png) no-repeat;
+    background-size: contain;
+}
+.story-title .story-detail{
+	width:2.49rem;
+	padding-left:.15rem;
+}
+.story-title .story-detail h2{
+	line-height:.24rem;
+	font-size:.16rem;
+}
+.story-title .story-detail h2 a{
+	float:right;
+	height:.24rem;
+	line-height:.24rem;
+}
+.story-title .story-detail h2 a>*{
+	color:#999;
+}
+.story-title .story-detail h2 a span{
+	float:left;
+	line-height:.24rem;
+}
+.story-title .story-detail h2 a i{
+	float:right;
+	margin-left:-.02rem;
+	font-size:.18rem;
+	line-height:.24rem;
+}
+.story-title .story-detail h3{
+	margin-top:.04rem;
+	font-size:.14rem;
+	line-height:.32rem;
+}
+.story-title .story-detail p{
+	max-height:.36rem;
+	line-height:.18rem;
+	color:#999;
+	overflow:hidden;
+}
+
+.story-list{
+	position:absolute;
+	top:1.46rem;
+	bottom:0;
+	width:100%;
+	overflow:auto;
+	background:#fff;
+}
+.story-list ul.list-wrap{
+	background:#fff;
+}
+.story-list ul.list-wrap li{
+	height:.7rem;
+	padding-left:.12rem;
+	position:relative;
+}
+.story-list ul.list-wrap li>*{
+	float:left;
+}
+.story-list ul.list-wrap li>img{
+	width:.5rem;
+	height:.5rem;
+	margin-top:.1rem;
+	border:1px solid #eeeeee;
+	border-radius:3px;
+}
+.story-list ul.list-wrap li>div{
+	width:2.98rem;
+	height:100%;
+	margin-left:.15rem;
+	border-bottom:1px solid #e8e8e8;
+}
+.story-list ul.list-wrap li>div>h3{
+	max-width:2.4rem;
+	line-height:.44rem;
+	font-size:.16rem;
+	white-space:nowrap;
+	overflow:hidden;
+	text-overflow:ellipsis;
+}
+.story-list ul.list-wrap li>div>span{
+	position:absolute;
+	right:.12rem;
+	top:.21rem;
+	width:.28rem;
+	height:.28rem;
+	background:url(../imgs/fenxiangbofang@2x.png) no-repeat;
+	background-size:contain;
+	z-index:1000;
+}
+.story-list ul.list-wrap li>div>p{
+	overflow:hidden;
+}
+.story-list ul.list-wrap li>div>p>*{
+	float:left;
+	font-size:.12rem;
+	color:#999;
+}
+.story-list ul.list-wrap li>div>p>span{
+	margin-right:.04rem;
+	height:.14rem;
+	line-height:.14rem;
+}
+.story-list ul.list-wrap li>div>p>span:last-of-type{
+	margin-right:.22rem;
+}
+.story-list ul.list-wrap li>div>p>i{
+	margin-right:.04rem;
+	height:.14rem;
+	line-height:.14rem;
+}

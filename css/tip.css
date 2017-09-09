@@ -1,0 +1,50 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, "Microsoft Yahei";
+}
+body {
+  background-color: #ffffff;
+}
+
+html {
+    font-size: 100px;
+}
+
+.tip-row {
+    border-bottom: 1px solid #e8e8e8;
+    padding: .12rem .15rem;
+    text-align: justify;
+}
+
+.tip-title {
+    /*background-color: cadetblue;*/
+    height: .30rem;
+   line-height:.30rem;
+}
+
+    .tip-title i {
+        width: .15rem;
+        height: .15rem;
+        float: left;
+        margin-top: .07rem;
+    }
+
+    .tip-title h3 {
+        float: left;
+        padding-left: .11rem;
+        font-size: .15rem;
+        color: #333333;
+    }
+
+.tip-detail {
+    font-size: .14rem;
+    /*background-color: aqua;*/
+    padding-left: .25rem;
+    line-height: 0.6rem;
+}
+
+    .tip-detail p {
+        line-height: .18rem;
+        color: #666666;
+    }

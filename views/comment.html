@@ -1,0 +1,406 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="MobileOptimized" content="width">
+    <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <title>点评</title>
+    <link href="/css/animate.css" rel="stylesheet">
+    <link href="/css/mui.css" rel="stylesheet">
+    <link href="/css/yjzh.css" rel="stylesheet">
+    <!--此页面此引用weChat.less-->
+    <link href="/css/font.css" rel="stylesheet">
+    <script src="/js/baidutongji.js"></script>
+    <script src="/js/zepto.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/mui.js"></script>
+    <script src="/js/js.config.js"></script>
+    <script src="/js/jquery.min.js"></script>
+
+    <style>
+        .wrap {
+            background: #fff;
+            top: 0;
+            bottom: .6rem;
+        }
+        
+        .mui-content {}
+        
+        .mui-scroll {
+            padding: 0;
+        }
+        
+        .weChat-active {
+            height: .95rem;
+            position: relative;
+            background: #efeff4;
+            border-bottom: none !important;
+        }
+        
+        .weChat-active p {
+            width: 100%;
+            color: #666;
+            font-size: .14rem;
+            text-align: center;
+        }
+        
+        .weChat-active a {
+            position: absolute;
+            left: 50%;
+            top: .45rem;
+            margin-left: -.3rem;
+            width: .8rem;
+            height: .3rem;
+            line-height: .3rem;
+            color: #16bcf8;
+            font-size: .14rem;
+            text-align: center;
+            border: 1px solid #14bdf6;
+            border-radius: 3px;
+        }
+        
+        .weChat-foot {
+            display: none;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .weChat-foot div {
+            width: .34rem;
+            height: .39rem;
+            margin-left: 1.7rem;
+            background: url(/imgs/foot.png) no-repeat;
+            background-size: contain;
+        }
+        
+        .weChat-foot p {
+            text-align: center;
+            line-height: .4rem;
+            font-size: .14rem;
+            color: #666;
+        }
+        
+        .weChat-foot a {
+            display: inline-block;
+            width: .8rem;
+            height: .3rem;
+            margin-top: .1rem;
+            line-height: .3rem;
+            text-align: center;
+            color: #14bdf6;
+            border: 1px solid #14bdf6;
+            border-radius: 3px;
+        }
+        
+        .mui-spinner {
+            width: .12rem;
+            height: .12rem;
+            background: url(/imgs/shouye_shuaxinjiazaizhong@2x.png) no-repeat;
+            background-size: contain;
+        }
+        
+        .mui-spinner:after {
+            width: 0;
+        }
+        
+        .mui-pull-caption {
+            font-size: .12rem;
+            font-weight: normal;
+            color: #999;
+        }
+        
+        .mui-icon {
+            width: .12rem;
+            height: .12rem;
+            background: url(/imgs/shouye_shuaxinxiala@2x.png) no-repeat;
+            background-size: contain;
+            color: rgba(0, 0, 0, 0);
+        }
+        
+        .mui-content .mui-pull-top-pocket {
+            height: .55rem;
+            background: url(/imgs/shouye_xiahuaslogan@2x.png) no-repeat;
+            background-position-x: center;
+            background-size: 25%;
+            top: .15rem !important;
+        }
+    </style>
+
+    <script type="text/javascript">
+        var ID; //景区id
+        var PageIndex = 1;
+        var PageSize = 5;
+        //初始加载页面
+        $(function() {
+
+            //加载控件
+            Init();
+
+            ID = request("ID");
+
+            GetScenicInfo(ID, null, "");
+        });
+
+        //获取评论详情
+        function GetScenicInfo(ID, Type, str) {
+            var obj = new Object();
+            obj.RelevantId = ID;
+            obj.CType = 7;
+            obj.PageIndex = PageIndex;
+            obj.PageSize = 5;
+            obj.Order = 0;
+            var url = "/serverH5";
+            $.ajax({
+                url: url,
+                async: true, // 注意此处需要同步
+                type: "POST",
+                dataType: "json",
+                data: {
+                    cmd: "UserCommentList",
+                    param: JSON.stringify(obj)
+                },
+                success: function(data) {
+                    if (str == "down") {
+                        Type.endPullupToRefresh(false);
+                    }
+                    if (str == "up") {
+                        mui('#refreshContainer').pullRefresh().endPulldownToRefresh();
+                        $(".comment-con li").remove();
+                    }
+                    if (data.State == 0) {
+                        var jsonData = data.Value;
+                        console.log(data);
+                        Bind(jsonData);
+
+                        ifshow();
+                    }
+                    //无数据操作
+                    if (data.state == 1 && PageIndex == 1) {
+                        $(".weChat-foot").show();
+                        $(".mui-content").hide();
+                    }
+                }
+            });
+
+            function Bind(obj) {
+                var str = "";
+
+                $.each(obj, function(j, item) {
+
+                    str += "<li>";
+                    str += "<aside><img src='" + item.HeadImg + "' alt=\"\"></aside>";
+                    str += "<section>";
+                    str += "<div class=\"star-mark\">";
+                    str += "<h6>" + item.NickName + "</h6>";
+                    str += "<p>";
+                    //  var backstyle="style=\"background:url(/imgs/"+item.Star+") no-repeat;";
+                    str += "<span style=\"background:url(/imgs/" + item.Star + ".png) no-repeat;background-size:contain;\"></span>";
+                    str += "<i>" + item.CreateTime + "</i>";
+                    //str += "<em>" + item.CreateTime + "</em>";
+                    str += "</p>";
+                    str += "</div>";
+                    str += "<div data-btn=\"true\" class=\"comment-detail\">";
+                    str += "<p>" + item.CommentContent + "</p>";
+                    str += "<span><em>展开</em><i class=\"icon-more-top\"></i></span>";
+                    str += "</div>";
+                    str += "<div class=\"comment-reply\">";
+
+                    if (item.ReplyCommentContent != "") {
+                        str += "<p><span>" + item.ReplyNickName + "：</span>" + item.ReplyCommentContent + "</p>";
+                    }
+
+                    str += "</div>";
+                    str += "</section>";
+                    str += "</li>";
+                });
+                var str1 = "";
+                str1 += "<li class=\"weChat-active\">";
+                str1 += "<p>亲，没有更多评论了，去留下您的足迹吧</p>";
+                str1 += "<a id=\"comm\" href=\"http://download.yjly.com/yjly.aspx\">去评论</a>";
+                str1 += "</li>";
+                $(".comment-con").append(str);
+                $(".weChat-active").remove();
+                $(".comment-con").append(str1);
+
+                var comm = document.querySelector('#comm');
+                comm.addEventListener('tap', function() {
+                    window.location = "http://download.yjly.com/yjly.aspx";
+                }, false);
+
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="share-opacity animated">
+            <div class="qr-wrap">
+                <h3>关注链景旅行</h3>
+                <p>全世界的景点都在这里！没逗你！</p>
+                <img src="/imgs/gongzhonghaoerweima.jpg" alt="code">
+                <p>长按关注公众号听讲解</p>
+                <span></span>
+            </div>
+        </div>
+        <div class="weChat-foot">
+            <div></div>
+            <p>该景区还没有评论哟，去留下您的足迹吧</p>
+            <a href="http://download.yjly.com/yjly.aspx">去评论</a>
+        </div>
+        <div class="mui-content" style="display:-none;">
+            <div id="refreshContainer" class="mui-content mui-scroll-wrapper">
+                <div class="mui-scroll">
+                    <ul class="comment-con" style="background:#fff;">
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="share-code" style=" -webkit-transition:all .4s ease; z-index:2;">
+        <i style=" background:url(/imgs/x.png) no-repeat; background-size:contain; position:absolute; left:0; top:0; width:.22rem; height:.22rem;"></i>
+        <img style="margin-left:.22rem;" src="/imgs/fenxiangerweimaguanzhu2@2x.png">
+        <p class="loadapp" style="width:3rem;"><img src="/imgs/logo@2x.png" alt="">下载链景旅行，免费听全球景点讲解</p>
+    </div>
+    <script>
+        //出现弹层和点击X消失
+        (function() {
+            var oWrap = document.querySelector('.wrap');
+            var oCon = document.querySelector('.share-code');
+            var oX = document.querySelector('.share-code i');
+            var oBtn = document.querySelector('.share-code img');
+            var opacity = document.querySelector('.share-opacity');
+            var oQr = document.querySelector('.qr-wrap span');
+            var iBtn;
+
+            oX.addEventListener('click', function() {
+                oCon.style.opacity = 0;
+                oWrap.style.bottom = 0;
+                //oCon.style.webkitTransform='translate3d(0,100px,0)';
+
+            }, false);
+            oCon.addEventListener('webkitTransitionEnd', function() {
+                this.style.display = 'none';
+            }, false);
+
+            oBtn.addEventListener('click', function() {
+                opacity.style.display = 'block';
+                if (!$(opacity).hasClass('fadeIn')) {
+                    $(opacity).addClass('fadeIn');
+                    $(opacity).removeClass('zoomOut');
+                }
+                iBtn = 1;
+            }, false);
+
+            oQr.addEventListener('click', function() {
+                if ($(opacity).hasClass('fadeIn')) {
+                    $(opacity).removeClass('fadeIn');
+                    $(opacity).addClass('zoomOut');
+                }
+                iBtn = 0;
+            }, false);
+
+            opacity.addEventListener('webkitAnimationEnd', function() {
+                if (iBtn) {
+                    opacity.style.display = 'block';
+                } else {
+                    opacity.style.display = 'none';
+                }
+            }, false);
+
+        })();
+        //展开收缩
+        function ifshow() {
+
+            var aCon = document.querySelectorAll('.comment-detail');
+
+            for (var i = 0; i < aCon.length; i++) {
+                (function(index) {
+
+                    var oBtn = aCon[index].querySelector('span');
+                    var oEm = aCon[index].querySelector('em');
+                    var oI = aCon[index].querySelector('i');
+
+
+                    if (aCon[index].getAttribute('data-btn') == 'true') {
+                        var oP = aCon[index].querySelector('p');
+                        var iH = $(oP).height();
+                        var iLineH = parseInt($(oP).css('line-height'));
+                        oP.onOff = true;
+                        if (iH > (iLineH * 5)) {
+                            oBtn.style.display = 'block';
+                            oP.style.height = iLineH * 5 + 'px';
+                        } else if (iH <= (iLineH * 5)) {
+                            oBtn.style.display = 'none';
+                            oP.parentNode.style.paddingBottom = '0rem';
+                        }
+                        aCon[index].setAttribute('data-btn', 'false');
+                    }
+
+                    oBtn.addEventListener('touchstart', function() {
+                        if (oP.onOff) {
+                            oP.style.height = iH + 'px';
+                            oEm.innerHTML = '收起';
+                            oI.style.webkitTransform = 'rotate(0deg)';
+                        } else {
+                            oP.style.height = iLineH * 5 + 'px';
+                            oEm.innerHTML = '展开';
+                            oI.style.webkitTransform = 'rotate(180deg)';
+                        }
+                        oP.onOff = !oP.onOff;
+                    }, false);
+                })(i);
+            }
+        };
+    </script>
+    <script>
+        function Init() {
+
+            mui.init({
+                pullRefresh: {
+                    container: "#refreshContainer", //下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+                    down: {
+                        contentdown: "下拉可以刷新", //可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+                        contentover: "释放立即刷新", //可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+                        contentrefresh: "正在刷新...", //可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+                        callback: pullUpFresh
+                    },
+                    up: {
+                        contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+                        contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+                        callback: pullDownFresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+                    }
+                }
+            });
+        }
+
+        function pullUpFresh() {
+            //业务逻辑代码，比如通过ajax从服务器获取新数据；
+
+            //注意，加载完新数据后，必须执行如下代码，注意：若为ajax请求，则需将如下代码放置在处理完ajax响应数据之后
+
+            PageIndex = 1;
+
+            GetScenicInfo(ID, null, "up");
+
+        }
+
+        function pullDownFresh() {
+            //业务逻辑代码，比如通过ajax从服务器获取新数据；
+            //注意：
+            //1、加载完新数据后，必须执行如下代码，true表示没有更多数据了：
+            //2、若为ajax请求，则需将如下代码放置在处理完ajax响应数据之后
+            var _this = this;
+            PageIndex += 1;
+            GetScenicInfo(ID, _this, "down");
+        }
+    </script>
+</body>
+
+</html>

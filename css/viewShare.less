@@ -1,0 +1,118 @@
+/* LESS Document */
+
+/**********Instruction**********/
+//=============================================================================
+// @des:            css viewShare files
+// @author:       	chengwei
+// @time:           2016-5-23
+// @lastTime     	2015-5-23
+// @version         0.1 beta
+// ============================================================================
+.view-audio{
+	height:.54rem;
+	background:#fff;
+	margin-bottom:.06rem;
+	padding:0 .12rem;
+}
+
+.view-audio>div{
+	float:left;
+	height:100%;
+}
+
+.view-audio .audio-btn{
+	width:.3rem;
+}
+.view-audio .audio-btn span{
+	float:left;
+	width:.15rem;
+	height:100%;
+	background:url(../imgs/fxbofang@2x.png) no-repeat 0 center;
+	background-size:contain;
+}
+
+.audio-control{
+	width:3.2rem;
+}
+.audio-control>*{
+	float:left;
+}
+.audio-control>span{
+	font-size:.1rem;
+	margin-top:.22rem;
+}
+.audio-control>span:last-of-type{
+	float:right;
+}
+.audio-control>.process-bar{
+	width:2.48rem;
+	height:.02rem;
+	margin-top:.26rem;
+	margin-left:.1rem;
+	background:#d7d7d7;
+	border-radius:.01rem;
+	position:relative;
+}
+.audio-control>.process-bar>*{
+	position:absolute;
+	left:0;
+	top:0;
+	height:100%;
+}
+.audio-control>.process-bar>.buffer-process{
+	width:0;
+	background:#dec8b3;
+}
+.audio-control>.process-bar>.play-process{
+	width:0;
+	background:#fd8316;
+}
+.audio-control>.process-bar>.move-bar{
+	float:right;
+	width:100%;
+	height:.16rem;
+	margin-top:-.06rem;
+	position:relative;
+	/*background:rgba(0,0,0,0.3);*/
+}
+.audio-control>.process-bar>.move-bar>.play-btn{
+	position:absolute;
+	left:-.03rem;
+	top:0;
+	width:.16rem;
+	height:.16rem;
+	/*background:url(../imgs/bfjindu@2x.png) no-repeat;
+	background-size:contain;*/
+	
+}
+.more-function{
+	width:100%;
+	padding:0 .32rem;
+	background:#fff;
+	overflow:hidden;
+}
+.more-function li{
+	float:left;
+	width:.6rem;
+	height:1.27rem;
+	margin-left:.65rem;
+}
+.more-function li a{
+	float:left;
+	width:100%;
+	height:100%;
+}
+.more-function li a img{
+	width:.44rem;
+	margin-top:.25rem;
+	margin-left:.07rem;
+}
+.more-function li a p{
+	font-size:.12rem;
+	line-height:.42rem;
+	text-align:center;
+}
+
+.more-function li:first-of-type{
+	margin-left:0;
+}

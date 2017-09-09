@@ -1,0 +1,102 @@
+/* LESS Document */
+
+/**********Instruction**********/
+//=============================================================================
+// @des:            css redBag-list files
+// @author:       	chengwei
+// @time:           2016-3-15
+// @lastTime     	2015-3-15
+// @version         0.1 beta
+// ============================================================================
+
+.redBag-list{
+	background:none;
+}
+.redBag-list li{
+	height:1.135rem;
+	background:#fff;
+	margin-top:.15rem;
+}
+.redBag-list li>div{
+	float:left;
+	height:100%;
+}
+.redBag-list .pub .redBag-money{
+	width:1rem;
+	text-align:center;
+	line-height:1rem;
+	position:relative;
+}
+.redBag-list .pub .redBag-money span{
+	font-size:.15rem;
+}
+.redBag-list .pub .redBag-money i{
+	
+	font-size:.36rem;
+}
+.redBag-list .pub .redBag-detail{
+	width:2.51rem;
+	padding:0 .2rem;
+}
+.redBag-list .pub .redBag-detail span{
+	color:#999;
+}
+.redBag-list .pub .redBag-detail h3{
+	font-size:.15rem;
+	line-height:.39rem;
+	margin-top:.05rem;
+}
+.redBag-list .pub .redBag-detail p{
+	font-size:.13rem;
+	line-height:.18rem;
+}
+.redBag-list .pub .redBag-money p{
+	position:absolute;
+	width:100%;
+	height:.13rem;
+	line-height:.13rem;
+	text-align:center;
+	font-size:.13rem;
+	left:0;
+	bottom:.3rem;
+}
+
+
+.redBag-list li.abled{
+	background:url(../imgs/redBag.png) no-repeat 0 0;
+	background-size:contain;
+}
+.redBag-list li.abled .redBag-money span{
+	color:#ff6a63;
+}
+.redBag-list li.abled .redBag-money i{
+	color:#ff6a63;
+}
+.redBag-list li.abled .redBag-detail h3{
+	color:#333;
+}
+.redBag-list li.abled .redBag-detail span{
+	color:#666;
+}
+.redBag-list li.abled .redBag-detail p{
+	color:#666;
+}
+
+.redBag-list li.unabled{
+	background:url(../imgs/grayBag.png) no-repeat 0 0;
+	background-size:contain;
+}
+.redBag-list li.unabled>*>* {
+	color:#999;
+}
+
+
+
+.mui-table-view:before{
+	background:none;
+}
+.rb{
+	border:none !important;
+	font-size:.2rem !important;
+	color:#222;
+}

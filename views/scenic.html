@@ -1,0 +1,737 @@
+<!doctype html>
+<html ng-app="WeChatIndex">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="MobileOptimized" content="width">
+    <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <title></title>
+    <link href="/css/animate.css" rel="stylesheet">
+    <link href="/css/mui.css" rel="stylesheet">
+    <link href="/css/yjzh.css" rel="stylesheet">
+    <!--此页面此引用scenicShare.less-->
+    <link href="/css/font.css" rel="stylesheet">
+    <script src="/js/baidutongji.js"></script>
+    <script src="/js/zepto.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/mui.js"></script>
+    <script src="/js/js.config.js"></script>
+
+
+    <!--引入angular-->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/angular.min.js"></script>
+    <!--引入angular-->
+    <script type="text/javascript">
+        //获取大景区ID
+        var id = request("id");
+        var code = request("code");
+        var PageIndex = 1;
+        var app = angular.module("WeChatIndex", []);
+
+        var rname = "";
+
+        if (request("name") != "" && request("name") != undefined && request("name") != "null") {
+            //  $("#title").text(unescape(request("name")));
+            document.title = unescape(request("name"));
+            rname = unescape(request("name"));
+        } else {
+            document.title = "";
+        }
+        //监听幻灯片
+        app.directive('onFinishRenderFilters', function($timeout) {
+            return {
+                restrict: 'A',
+                link: function(scope, element, attr) {
+                    if (scope.$last === true) {
+                        $timeout(function() {
+                            scope.$emit('ngRepeatFinished');
+                        });
+                    }
+                }
+            }
+        });
+
+        //播放
+        app.directive('onFinishRenderFiltersBofang', function($timeout) {
+            return {
+                restrict: 'A',
+                link: function(scope, element, attr) {
+                    if (scope.$last === true) {
+                        $timeout(function() {
+                            scope.$emit('ngRepeatFinished1');
+                        });
+                    }
+                }
+            }
+        });
+
+        //成功加载定位后调用方法
+        app.controller("FunctionCarouselCtrl", ['$scope', '$http', '$sce', function($scope, $http, $sce) {
+            //监听幻灯片
+            $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
+
+                var slider = mui("#slider");
+                slider.slider({
+                    interval: 2000
+                });
+
+                //添加点击事件
+
+            });
+            var arrayObj = new Array();
+            $scope.GetScenicInfo = function() {
+                var obj = new Object();
+                obj.ScenicId = id;
+
+                var url = "/serverH5";
+                $http.post(url, {
+                    cmd: "H5ScenicDetailsById",
+                    param: JSON.stringify(obj)
+                }).success(function(data) {
+                    if (data.State == 0) {
+                        $scope.ScenicInfoData = data.Value;
+                        if (!$scope.ScenicInfoData.IsFree) { // ture 不收费，false 收费
+                            $(".share-opacity-pay").show();
+                            init();
+                        }
+                        rname = $scope.ScenicInfoData.Name;
+                        $scope.ScnicImgList = $scope.ScenicInfoData.ImgUrl.split(',');
+                        $scope.lengg = $scope.ScnicImgList.length - 1;
+                    }
+                });
+            }
+            $scope.titlestr = "";
+            //定义异步加载数据方法
+            $scope.GetScenicList = function(jr, type) {
+                if (type != "down") {
+                    $(".wrap").hide();
+                }
+
+
+                var obj = new Object();
+                obj.ScenicId = id;
+                obj.PageIndex = PageIndex;
+                obj.PageSize = 20;
+
+                var url = "/serverH5";
+                $http.post(url, {
+                    cmd: "H5ScenicDetailsWillListen",
+                    param: JSON.stringify(obj)
+                }).success(function(data) {
+                    $(".wrap").show();
+                    if (type == "down") {
+                        jr.endPullupToRefresh(false);
+                    }
+                    if (type == "up") {
+                        mui('#refreshContainer').pullRefresh().endPulldownToRefresh();
+                        // $("#ullist li").remove();
+                    }
+
+                    if (data.State == "0") {
+
+                        var arr = data.Value;
+                        arrayObj = arrayObj.concat(arr);
+                        $scope.SData = arrayObj;
+                        document.title = $scope.SData[0].Name;
+                        rname = $scope.SData[0].Name;
+
+                        //  $scope.ScnicImgList = $scope.SData[0].BigImg.split(',');
+                        //  $scope.lengg = $scope.ScnicImgList.length - 1;
+                        //   $scope.titlestr = $scope.SData[0].SSName;
+                        //   document.title = $scope.titlestr;
+
+                        //   rname = $scope.titlestr;
+
+                        //兼容微信模式
+                        var $body = $('body');
+                        var $iframe = $('<iframe src="/favicon.ico"></iframe>');
+                        $iframe.on('load', function() {
+                            setTimeout(function() {
+                                $iframe.off('load').remove();
+                                // 临时需求 和合作方演示实例
+                                if (id == 1) {
+                                    $("#showAllMap").find("a").attr("href", "http://www.quanjingke.com/jq/m/138");
+                                    $("#showAllMap").show();
+                                }
+
+                                // 临时需求 和合作方演示实例
+                                if (id == 110238) {
+                                    $("#showAllMap").find("a").attr("href", "http://www.51club.com/m/10207661_1/detail.htm?id=2209");
+                                    $("#showAllMap").find("a").css("background-image", "url(/imgs/360sq.png)");
+
+                                    $("#showAllMap").show();
+                                }
+                            }, 20);
+
+                        }).appendTo($body);
+                    }
+                });
+            };
+
+            //$scope.pullUpFresh = function () {
+
+            //    PageIndex = 1;
+            //    arrayObj = new Array();;
+            //    $scope.GetScenicList(null, "up");
+            //};
+            $scope.pullDownFresh = function() {
+
+                var _this = this;
+                PageIndex += 1;
+                $scope.GetScenicList(_this, "down");
+            }
+            $scope.loadjiazai = function() {
+                mui.init({
+                    pullRefresh: {
+                        container: "#refreshContainer", //下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+
+                        //down: {
+                        //    contentdown: "下拉可以刷新",//可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+                        //    contentover: "释放立即刷新",//可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+                        //    contentrefresh: "正在刷新...",//可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+                        //    callback: $scope.pullUpFresh
+                        //},
+                        up: {
+                            contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+                            contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+                            callback: $scope.pullDownFresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+                        }
+                    }
+                });
+            };
+
+            //绑定完数据添加监听
+            $scope.$on('ngRepeatFinished1', function(ngRepeatFinishedEvent) {
+                (function() {
+                    var aBtn = document.querySelectorAll('.scence-list li');
+
+                    for (var i = 0; i < aBtn.length - 1; i++) {
+                        (function(index) {
+                            aBtn[index].addEventListener('tap', function() {
+                                window.location.href = "/views/scenicSpot.html?ID=" + this.id + "&name=" + escape(rname) + "&pid=" + id + "&code=" + code;
+
+                            }, false);
+                        })(i);
+                    }
+                    aBtn[aBtn.length - 1].addEventListener('tap', function() {
+                        window.location.href = "/views/scenicSpot.html?ID=" + id + "&name=" + escape(rname) + "&pid=" + id + "&code=" + code;
+                    }, false);
+
+                })();
+
+                $scope.loadjiazai();
+            });
+
+            $scope.GetScenicList(null, "");
+            $scope.GetScenicInfo();
+            $scope.scenicID = id;
+
+            var that = {};
+
+            $scope.toPay = function() {
+
+                if (that.requestState) {
+                    return;
+                }
+                that.requestState = true;
+                var obj = new Object();
+                obj.SId = $scope.scenicID;
+                obj.Code = code;
+                var url = "/serverH5";
+                $http.post(url, {
+                    cmd: "OpenBuyScenicAlnumOrder",
+                    param: JSON.stringify(obj)
+                }).success(function(data) {
+                    if (data.State == "0") {
+                        var res = data.Value;
+                        var AppId = res.appId,
+                            TimeStamp = res.timeStamp,
+                            NonceStr = res.nonceStr,
+                            Package = res.package,
+                            PaySign = res.sign;
+
+                        function onBridgeReady() {
+                            WeixinJSBridge.invoke(
+                                'getBrandWCPayRequest', {
+                                    "appId": AppId, //公众号名称，由商户传入
+                                    "timeStamp": TimeStamp, //时间戳，自1970年以来的秒数
+                                    "nonceStr": NonceStr, //随机串
+                                    "package": Package,
+                                    "signType": "MD5", //微信签名方式：
+                                    "paySign": PaySign //微信签名
+                                },
+                                function(res) {
+                                    that.requestState = false;
+                                    if (res.err_msg == "get_brand_wcpay_request:ok") {
+                                        alert("支付成功！");
+                                        $(".share-opacity-pay").hide();
+                                    } // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+                                }
+                            );
+                        }
+                        if (typeof WeixinJSBridge == "undefined") {
+                            if (document.addEventListener) {
+                                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+                            } else if (document.attachEvent) {
+                                document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+                            }
+                        } else {
+                            onBridgeReady();
+                        }
+                    }
+                }, function(data) {
+                    console.log(data);
+                });
+            }
+            $scope.isPlay = false;
+            $scope.play = function() {
+                var music = document.getElementById('music2');
+                music.src = $scope.ScenicInfoData.AudioUrl;
+                if (!$scope.isPlay) {
+                    music.play();
+                } else {
+                    music.pause();
+                }
+                $scope.isPlay = !$scope.isPlay;
+            }
+
+            var init = function() {
+                    if (!code) {
+                        window.location.href = "https://share.lianjinglx.com/wxAuth.html?backUrl=" + window.location.href;
+                    } else {
+                        var obj = new Object();
+                        obj.SId = $scope.scenicID;
+                        obj.Code = code;
+                        var url = "/serverH5";
+                        $http.post(url, {
+                            cmd: "H5ScenicIsBuy",
+                            param: JSON.stringify(obj)
+                        }).success(function(data) {
+                            if (data.State == 0) {
+                                //用户是否已经购买
+                                if (data.Value) {
+                                    $(".share-opacity-pay").hide();
+                                }
+                            } else {
+                                window.location.href = "/views/scenic.html?id=" + $scope.scenicID;
+                            }
+                        });
+                    }
+                }
+                // 张掖平山湖大峡谷-山丹大佛寺-马蹄寺
+                // 29694-69639-61789
+                // if ($scope.scenicID == "29694" || $scope.scenicID == "69639" || $scope.scenicID == "61789") {
+                //     $(".share-opacity-pay").show();
+                //     init();
+                // }
+                //$scope.GetScenicList('北京', [126.605516, 43.87596]);
+        }]);
+    </script>
+    <style>
+        .wrap {
+            top: 0;
+        }
+        
+        .mui-table-view {
+            height: .44rem;
+            border-bottom: 1px solid #e8e8e8;
+        }
+        
+        .mui-slider,
+        .mui-slider .mui-slider-group .mui-slider-item img {
+            height: 1.68rem;
+        }
+        
+        .mui-slider {
+            position: relative;
+        }
+        
+        .mui-badge-danger,
+        .mui-badge-red {
+            background: none;
+            color: #999;
+            font-size: .14rem;
+            right: .24rem !important;
+        }
+        
+        .mui-navigate-right:after,
+        .mui-push-right:after {
+            right: .1rem;
+            font-size: .18rem;
+        }
+        
+        .mui-table-view-cell>a:not(.mui-btn) {
+            margin: -.08rem -.18rem;
+        }
+        
+        .scence-view {
+            position: fixed;
+            top: 1.76rem;
+            bottom: .6rem;
+            width: 100%;
+            overflow: auto;
+            background: #fff;
+        }
+        
+        .mui-scroll {
+            padding: 0;
+        }
+        
+        .scence-list {
+            background: #fff;
+        }
+        
+        .mui-scroll-wrapper {
+            top: .55rem;
+        }
+        
+        .mui-pull-top-pocket {
+            background: #fff;
+        }
+        
+        .mui-table-view li {
+            float: left;
+            position: relative;
+            width: 50%;
+            height: .44rem;
+            line-height: .44rem;
+            text-align: center;
+        }
+        
+        .mui-table-view a {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .mui-table-view i {
+            position: absolute;
+            top: .12rem;
+            width: .16rem;
+            height: .16rem;
+            left: .45rem;
+        }
+        
+        .mui-spinner {
+            width: .12rem;
+            height: .12rem;
+            background: url(/imgs/shouye_shuaxinjiazaizhong@2x.png) no-repeat;
+            background-size: contain;
+        }
+        
+        .mui-spinner:after {
+            width: 0;
+        }
+        
+        .mui-pull-caption {
+            font-size: .12rem;
+            font-weight: normal;
+            color: #999;
+        }
+        
+        .mui-icon {
+            width: .12rem;
+            height: .12rem;
+            background: url(/imgs/shouye_shuaxinxiala@2x.png) no-repeat;
+            background-size: contain;
+            color: rgba(0, 0, 0, 0);
+        }
+        
+        .mui-content .mui-pull-top-pocket {
+            height: .55rem;
+            background: url(/imgs/shouye_xiahuaslogan@2x.png) no-repeat;
+            background-position-x: center;
+            background-size: 25%;
+            top: .15rem !important;
+        }
+    </style>
+    <style>
+        .share-opacity-pay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 501;
+            display: none;
+        }
+        
+        .share-opacity-pay .qr-wrap {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin: -1.45rem -1.34rem;
+            width: 2.69rem;
+            height: 2.9rem;
+            background: #fff;
+            border-radius: 10px;
+            text-align: center;
+            background: url(/imgs/beijing.png) no-repeat;
+            background-size: cover;
+        }
+        
+        .share-opacity-pay .qr-wrap img {
+            width: 1rem;
+            height: 1rem;
+            border-radius: 10px;
+            border: 1px solid #ffffff;
+        }
+        
+        .share-opacity-pay .qr-wrap h3 {
+            margin-top: .3rem;
+            margin-bottom: .22rem;
+            font-size: .16rem;
+            color: #ffffff;
+        }
+        
+        .share-opacity-pay .qr-wrap h2 {
+            margin-top: .15rem;
+            margin-bottom: .05rem;
+            font-size: .12rem;
+            color: #666666;
+            text-decoration: line-through;
+        }
+        
+        .share-opacity-pay .qr-wrap h1 {
+            margin-bottom: .2rem;
+            font-size: .12rem;
+            color: #000000;
+        }
+        
+        .share-opacity-pay .qr-wrap h1 span {
+            height: .15rem;
+            width: .37rem;
+            font-size: .12rem;
+            color: #ffffff;
+            background-color: #ff6f6f;
+            border: 1px solid #ff6f6f;
+            border-radius: .04rem;
+        }
+        
+        .share-opacity-pay .qr-wrap button {
+            display: inline-block;
+            width: 1.7rem;
+            height: .3rem;
+            line-height: .3rem;
+            background-color: #ffffff;
+            color: #29bcf5;
+            white-space: nowrap;
+            text-align: center;
+            font-size: .14rem;
+            border: 1px solid #29bcf5;
+            border-radius: .02rem;
+            cursor: pointer;
+            opacity: .9;
+            border-radius: .16rem;
+        }
+        
+        .share-opacity-pay .qr-wrap em.btn {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin: -0.15rem;
+            width: .3rem;
+            height: .3rem;
+            background: url(/imgs/jingdianbofang@2x.png) no-repeat;
+            background-size: contain;
+        }
+        
+        .share-opacity-pay .qr-wrap em.btn.active {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin: -0.15rem;
+            width: .3rem;
+            height: .3rem;
+            background: url(/imgs/jigndianzanting@2x.png) no-repeat;
+            background-size: contain;
+        }
+    </style>
+</head>
+
+<body ng-controller="FunctionCarouselCtrl as fc">
+
+    <div class="weChat-refresh-bg">
+        <img src="/imgs/shouye_xiahuaslogan@2x.png" alt="">
+        <p><span></span><i>加载中...</i></p>
+    </div>
+
+    <div class="share-opacity animated">
+        <div class="qr-wrap">
+            <h3>关注链景旅行</h3>
+            <p>全世界的景点都在这里！没逗你！</p>
+            <img src="/imgs/gongzhonghaoerweima.jpg" alt="code">
+            <p>长按关注公众号听讲解</p>
+            <span></span>
+        </div>
+    </div>
+
+    <div class="share-opacity-pay animated fadeIn">
+        <div class="qr-wrap">
+            <h3>{{ScenicInfoData.Name}}</h3>
+            <div style="position: relative;">
+                <audio id="music2" loop="loop">你的浏览器不支持audio标签。</audio>
+                <em class="btn" ng-class="{true: 'active'}[isPlay]" ng-click="play()"></em>
+                <img ng-src="{{ScenicInfoData.ImgUrl}}" alt="code">
+            </div>
+            <h2>原价：20元</h2>
+            <h1><span>10元 </span>&nbsp;畅听整个景区</h1>
+            <button ng-click="toPay()">&nbsp;立即购买&nbsp;</button>
+        </div>
+    </div>
+
+    <div class="wrap">
+        <div id="slider" class="mui-slider">
+            <div class="scenic-tips" style=" width:.75rem; text-align:center; background:#fff; left:0; border-radius:0 .12rem .12rem 0;">
+                <a href="/index.html" style="color:#fe7c1a;">
+                    全部景区
+                </a>
+            </div>
+
+            <div id="showAllMap" class="scenic-tips" style="display:none;width: 1rem; height: 0.34rem; text-align: center; background: rgba(255, 255, 255, 0.8); border-radius: 0.17rem; top: 1.2rem; right: 0.1rem !important; left: auto !important;">
+                <a href="http://www.quanjingke.com/jq/m/138" style="
+                   display:block;
+                   width:100%;
+                   height:100%;
+                   background-image:url(/imgs/360qj.png);
+                background-size:76% auto;
+                background-repeat:no-repeat;
+                background-position:center 20%;">
+                </a>
+            </div>
+
+
+            <div class="mui-slider-group mui-slider-loop">
+                <div class="mui-slider-item mui-slider-item-duplicate">
+                    <a href="#">
+                        <img ng-src="{{ScnicImgList[lengg]}}">
+                    </a>
+                </div>
+
+                <div class="mui-slider-item" ng-repeat="item in ScnicImgList track by $index" on-finish-render-filters>
+                    <a href="#">
+                        <img ng-src="{{item}}">
+                    </a>
+                </div>
+                <!-- 额外增加的一个节点(循环轮播：最后一个节点是第一张轮播) -->
+                <div class="mui-slider-item mui-slider-item-duplicate">
+                    <a href="#">
+                        <img ng-src="{{ScnicImgList[0]}}">
+                    </a>
+                </div>
+            </div>
+
+            <div class="mui-slider-indicator">
+                <div ng-class="{true: 'mui-indicator mui-active', false: 'mui-indicator'}[$index==0]" ng-repeat="item in ScnicImgList track by $index"></div>
+            </div>
+
+
+
+
+        </div>
+
+        <div class="scence-view">
+            <ul class="mui-table-view" style="">
+                <li class="">
+                    <a href="tips.html?ID={{scenicID}}"><i style="background:url(/imgs/tieshihong@2x.png) no-repeat; background-size:contain;"></i>景区贴士</a>
+                    <span style="position:absolute; right:0; top:.07rem; width:1px; height:.3rem; background:#e8e8e8;"></span>
+                </li>
+                <li class="">
+                    <a href="comment.html?ID={{scenicID}}"><i style="background:url(/imgs/dianpinglv@2x.png) no-repeat; background-size:contain;"></i>景区点评</a>
+                </li>
+            </ul>
+
+            <div id="refreshContainer" class="mui-content mui-scroll-wrapper">
+                <div class="mui-scroll">
+                    <!--数据列表-->
+                    <ul class="scence-list">
+
+                        <li id="{{itema.Id}}" name="{{itema.SSName}}" ng-repeat="itema in SData" on-finish-render-filters-bofang>
+
+                            <span>
+                                <img ng-src="{{itema.ImgUrl}}">
+                                <i ng-show="itema.IsListen==1"></i>
+                                <em class="btn"></em>
+                            </span>
+                            <p>{{itema.Name}}</p>
+                        </li>
+                        <!-- <li class="last-li">
+                            <span>展品展示</span>
+                        </li> -->
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="share-code" style=" -webkit-transition:all .4s ease; z-index:2;">
+        <i style=" background:url(/imgs/x.png) no-repeat; background-size:contain; position:absolute; left:0; top:0; width:.22rem; height:.22rem;"></i>
+        <img style="margin-left:.22rem;" src="/imgs/fenxiangerweimaguanzhu2@2x.png">
+        <p class="loadapp" style="width:3rem;"><img src="/imgs/logo@2x.png" alt="">下载链景旅行，免费听全球景点讲解</p>
+    </div>
+    <script>
+        //出现弹层和点击X消失
+        (function() {
+            var oWrap = document.querySelector('.scence-view');
+            var oCon = document.querySelector('.share-code');
+            var oX = document.querySelector('.share-code i');
+            var oBtn = document.querySelector('.share-code img');
+            var opacity = document.querySelector('.share-opacity');
+            var oQr = document.querySelector('.qr-wrap span');
+            var iBtn;
+
+
+            var load = document.querySelector('.loadapp');
+            load.addEventListener('tap', function() {
+                window.location = "http://download.yjly.com/yjly.aspx";
+            }, false);
+
+            oX.addEventListener('click', function() {
+                oCon.style.opacity = 0;
+                oWrap.style.bottom = 0;
+                //oCon.style.webkitTransform='translate3d(0,100px,0)';
+
+            }, false);
+            oCon.addEventListener('webkitTransitionEnd', function() {
+                this.style.display = 'none';
+            }, false);
+
+            oBtn.addEventListener('click', function() {
+                opacity.style.display = 'block';
+                if (!$(opacity).hasClass('fadeIn')) {
+                    $(opacity).addClass('fadeIn');
+                    $(opacity).removeClass('zoomOut');
+                }
+                iBtn = 1;
+            }, false);
+
+            oQr.addEventListener('click', function() {
+                if ($(opacity).hasClass('fadeIn')) {
+                    $(opacity).removeClass('fadeIn');
+                    $(opacity).addClass('zoomOut');
+                }
+                iBtn = 0;
+            }, false);
+
+            opacity.addEventListener('webkitAnimationEnd', function() {
+                if (iBtn) {
+                    opacity.style.display = 'block';
+                } else {
+                    opacity.style.display = 'none';
+                }
+            }, false);
+
+        })();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,774 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="MobileOptimized" content="width">
+    <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <title id="title"></title>
+    <link href="/css/animate.css" rel="stylesheet">
+    <link href="/css/mui.css" rel="stylesheet">
+    <link href="/css/yjzh.css" rel="stylesheet">
+    <!--此页面此引用scenicShare.less-->
+    <link href="/css/font.css" rel="stylesheet">
+    <!--<script src="/js/baidutongji.js"></script>-->
+    <script src="/js/zepto.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/mui.js"></script>
+
+    <!--引入angular-->
+    <script src="/js/jquery.min.js"></script>
+
+    <!--引入angular-->
+    <script src="/js/js.config.js"></script>
+    <script type="text/javascript">
+        var AreaID = "北京";
+        var Lon = "";
+        var Lat = "";
+        var ID = request("ID");
+        var PID = 0;
+
+        var AreaID = "";
+
+        var RPID = request("pid");
+
+        var LangName = request("LangName");
+
+        var name = unescape(request("name"));
+
+        function init() {
+            var code = request("code");
+            if (!code) {
+                window.location.href = "https://share.lianjinglx.com/wxAuth.html?backUrl=" + window.location.href;
+            } else {
+                var obj = new Object();
+                obj.SId = RPID;
+                obj.Code = code;
+                var url = "/serverH5";
+                $.ajax({
+                    url: url,
+                    async: false, // 注意此处需要同步
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        cmd: "H5ScenicIsBuy",
+                        param: JSON.stringify(obj)
+                    },
+                    success: function(data) {
+                        //用户是否已经购买
+                        if (data.State == 0) {
+                            if (data.Value) {
+
+                            } else {
+                                window.location.href = "/views/scenic.html?id=" + RPID;
+                            }
+                        } else {
+                            window.location.href = "/views/scenic.html?id=" + RPID;
+                        }
+                    }
+                });
+            }
+        }
+
+        $(function() {
+            var aBtn = document.querySelector('#retu');
+            (function() {
+                aBtn.addEventListener('tap', function() {
+                    window.location.href = "/views/scenic.html?id=" + RPID;
+                });
+            })();
+            //绑定基础数据
+            if (name != "" && name != null && name != undefined && name != "null") {
+                aBtn.text = "";
+                aBtn.text = name;
+            } else {
+                var TITL = document.querySelector('.scenic-tips');
+                TITL.style.display = "none";
+            }
+            BindDetail();
+            //   SearchLanage();
+        });
+        //推荐列表
+        function Bindrecommend() {
+            $(".wrap").hide();
+            var obj = new Object();
+            obj.PId = RPID;
+            obj.Lon = Lon;
+            obj.Lat = Lat;
+            obj.SId = ID;
+            var url = "/LJLXHandler.ashx?cmd=VisitnetWork&param=" + JSON.stringify(obj) + "&method=WeiXinScenicSpotNear&language=zh&version=0&type=H5";
+            $.ajax({
+                url: url,
+                async: true, // 注意此处需要同步
+                type: "POST",
+                dataType: "json",
+                data: [],
+                success: function(data) {
+                    $(".wrap").show();
+                    if (data.state === "0") {
+                        var jsonData = jQuery.parseJSON(data.value);
+                        BindrecommendNumber(jsonData);
+                    }
+                }
+            });
+        }
+        //绑定相关推荐
+        function BindrecommendNumber(obj) {
+            var str = "<h4><i class=\"icon-good\"></i>附近景点</h4>";
+            //<div class="story-title" data-url="/voice/Ryan Farish - Fireflies.mp3">
+            //    <img src="/images/1.jpg" alt="">
+            //    <div class="story-detail">
+            //        <h2>故宫博物院</h2>
+            //        <h3>简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介简介</h3>
+            //    </div>
+            //</div>
+            $.each(obj, function(j, item) {
+                str += "<div class=\"story-title\" id=" + item.Id + ">";
+                str += " <img src=" + item.PicImg + ">";
+                str += " <div class=\"story-detail\">";
+                if (Lon <= 0) {
+                    str += "<h2>" + item.Name + "<span style=\"float: right; font-size: .12rem;\">" + AreaID + "</span></h2>";
+                } else {
+                    str += "<h2>" + item.Name + "<span style=\"float: right; font-size: .12rem;\">" + (parseInt(item.Distance) > 1000 ? (parseInt(item.Distance) / 1000).toFixed(2) + "km" : +parseInt(item.Distance) + "m") + "</span></h2>";
+                }
+
+                str += "<h3>" + item.Introduce + "</h3>";
+                str += "</div></div>";
+            });
+            $(".about-recommend").append(str);
+
+            (function() {
+                var aBtn = document.querySelectorAll('.story-title');
+
+                for (var i = 0; i < aBtn.length; i++) {
+                    (function(index) {
+                        aBtn[index].addEventListener('tap', function() {
+
+                            window.location.href = "/html/weChat/storyShare.html?ID=" + this.id + "&name=" + escape(request("name")) + "&pid=" + request("pid") + "&code=" + request("code");
+
+                        }, false);
+                    })(i);
+                }
+            })();
+        }
+
+        function BindDetail() {
+            $(".wrap").hide();
+            var obj = new Object();
+            obj.ScenicId = ID;
+            obj.Lang = 1;
+            var url = "/serverH5";
+            $.ajax({
+                url: url,
+                async: false, // 注意此处需要同步
+                type: "POST",
+                dataType: "json",
+                data: {
+                    cmd: "H5ScenicSpotDetails",
+                    param: JSON.stringify(obj)
+                },
+                success: function(data) {
+                    console.log(data);
+                    $(".wrap").show();
+
+                    if (data.State == 0) {
+                        var jsonData = data.Value;
+                        if (!jsonData.IsFree) { // ture 不收费，false 收费
+                            init();
+                        }
+                        $("#Introduce").text(jsonData.Introduce);
+
+
+
+                        $("#ScenicName").text(jsonData.SName);
+                        if (jsonData.Audios.length > 0) {
+                            $("#audioID").attr("src", jsonData.Audios[0].AudioUrl);
+                            //$(".view-audio").hide();
+                        } else {
+                            $("#vis").show();
+                        }
+
+                        //绑定图片
+                        BindImage(jsonData.LongPic);
+                        //展开或关闭
+                        OUTandIn();
+
+                        //滑动
+                        hadong();
+
+                        //绑定相关推荐
+                        //Bindrecommend();
+                        document.title = jsonData.SName;
+                        //兼容微信模式
+                        var $body = $('body');
+                        var $iframe = $('<iframe src="/favicon.ico"></iframe>');
+                        $iframe.on('load', function() {
+                            setTimeout(function() {
+                                $iframe.off('load').remove();
+                            }, 20);
+                        }).appendTo($body);
+                    }
+                }
+            });
+        }
+
+        //绑定图片函数
+        function BindImage(imageSrc) {
+
+            var obj = imageSrc.split(',');
+            var str = "";
+            var str1 = "";
+
+            str += "<div class=\"mui-slider-item mui-slider-item-duplicate\">";
+            str += "<a href=\"#\"><img src=\"" + obj[obj.length - 1] + "\">";
+            str += "</div>";
+
+            $.each(obj, function(j, item) {
+                str += "<div class=\"mui-slider-item\">";
+                str += "<a href=\"#\"><img src=\"" + item + "\">";
+                str += "</div>";
+
+                if (j == 0) {
+                    str1 += "<div class=\"mui-indicator mui-active\"></div>";
+                } else {
+                    str1 += "<div class=\"mui-indicator\"></div>";
+                }
+            });
+
+            str += "<div class=\"mui-slider-item mui-slider-item-duplicate\">";
+            str += "<a href=\"#\"><img src=\"" + obj[0] + "\">";
+            str += "</div>";
+
+            $("#BigSrc").append(str);
+
+            $("#BigSrcBot").append(str1);
+            //<div class="mui-slider-item mui-slider-item-duplicate">
+            //<a href="#">
+            //    <img src="/images/4.jpg">
+            //</a>
+            //</div>
+
+
+        }
+
+
+        //判定子景点是否有其他语言
+    </script>
+
+
+
+
+    <style>
+        .mui-scroll-wrapper {
+            overflow: auto;
+        }
+        
+        .wrap {
+            top: 0;
+            bottom: .6rem;
+        }
+        
+        .mui-table-view {
+            height: .44rem;
+            border-bottom: 1px solid #e8e8e8;
+            overflow: hidden;
+        }
+        
+        .mui-slider,
+        .mui-slider .mui-slider-group .mui-slider-item img {
+            height: 1.68rem;
+        }
+        
+        .mui-slider {
+            position: relative;
+        }
+        
+        .mui-badge-danger,
+        .mui-badge-red {
+            background: none;
+            color: #999;
+            font-size: .14rem;
+            right: .24rem !important;
+        }
+        
+        .mui-navigate-right:after,
+        .mui-push-right:after {
+            right: .1rem;
+            font-size: .18rem;
+        }
+        
+        .mui-table-view-cell>a:not(.mui-btn) {
+            margin: -.08rem -.18rem;
+        }
+        
+        .rate-detail {
+            margin-bottom: .06rem;
+        }
+        
+        .view-title {
+            text-align: center;
+            color: #222 !important;
+        }
+        
+        .about-recommend {}
+        
+        .about-recommend>div {
+            height: .85rem;
+        }
+        
+        .about-recommend>div img {
+            width: .65rem;
+            height: .65rem;
+            padding: 0;
+            margin-top: .1rem;
+            border-radius: 3px;
+        }
+        
+        .story-title {
+            padding: 0;
+            padding-left: .12rem;
+        }
+        
+        .story-title .story-detail {
+            width: 2.83rem;
+            height: 100%;
+            margin-left: .15rem;
+            padding: 0;
+            padding-right: .12rem;
+            border-bottom: 1px solid #e8e8e8;
+        }
+        
+        .story-title .story-detail h3 {
+            margin-top: .2rem;
+            color: #999;
+            line-height: .2rem;
+            max-height: .18rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .story-title .story-detail h2 {
+            margin-top: .1rem;
+        }
+        
+        .story-title .story-detail p {
+            margin-top: .08rem;
+        }
+        
+        .story-title .story-detail p span {
+            float: left;
+            margin-right: .04rem;
+            height: .14rem;
+            line-height: .14rem;
+            font-size: .12rem;
+            color: #999;
+        }
+        
+        .story-title .story-detail p span:last-of-type {
+            margin-right: .22rem;
+        }
+        
+        .story-title .story-detail p i {
+            float: left;
+            margin-right: .04rem;
+            height: .14rem;
+            line-height: .14rem;
+            font-size: .12rem;
+            color: #999;
+        }
+        
+        .about-recommend h4 {
+            padding-left: .12rem;
+            height: .39rem;
+            font-size: .14rem;
+            line-height: .49rem;
+            background: #fff;
+        }
+        
+        .about-recommend h4 i {
+            margin-right: .05rem;
+            color: #17bbf8;
+        }
+        
+        .mui-content {}
+        
+        .mui-scroll {
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+
+
+    <div class="weChat-refresh-bg">
+        <img src="/imgs/shouye_xiahuaslogan@2x.png" alt="">
+        <p><span></span><i>加载中...</i></p>
+    </div>
+
+    <div class="share-opacity animated">
+        <div class="qr-wrap">
+            <h3>关注链景旅行</h3>
+            <p>全世界的景点都在这里！没逗你！</p>
+            <img src="/imgs/gongzhonghaoerweima.jpg" alt="code">
+            <p>长按关注公众号听讲解</p>
+            <span></span>
+        </div>
+    </div>
+
+
+
+    <div class="wrap" style="background:#f6f6f6;">
+
+        <div class="mui-scroll">
+            <div id="slider" class="mui-slider">
+                <div class="scenic-tips" style=" width:.75rem; text-align:center; background:#fff; left:0; border-radius:0 .12rem .12rem 0;">
+                    <a id="retu" style="color:#fe7c1a;">
+                        全部讲解
+                    </a>
+                </div>
+                <div class="mui-slider-group mui-slider-loop" id="BigSrc">
+
+                </div>
+                <div class="mui-slider-indicator" id="BigSrcBot">
+
+
+                </div>
+            </div>
+
+            <p id="vis" style="display:none;position:absolute; left: 0;top: 1.68rem; z-index: 10; font-size: .14rem; width: 100%; height: .54rem; line-height: .54rem; text-align: center; color: #fff; background: rgba(0,0,0,0.5);">该音频暂未录制！</p>
+            <div class="view-audio">
+                <audio id="audioID" src="" preload="auto"></audio>
+                <div class="audio-btn">
+                    <span></span>
+                </div>
+                <div class="audio-control">
+                    <span class="play-time">00:00</span>
+                    <p class="process-bar">
+                        <span class="buffer-process"></span>
+                        <span class="play-process"></span>
+                        <span class="move-bar"><img src="/imgs/bfjindu@2x.png" alt="" class="play-btn"></span>
+                    </p>
+                    <span class="all-time">00:00</span>
+                </div>
+            </div>
+            <div class="scence-rate">
+                <ul class="mui-table-view">
+                    <li class="mui-table-view-cell">
+                        <a href="#" class="" style="font-size:.14rem;" id="ScenicName">
+
+
+                        </a>
+                    </li>
+                </ul>
+                <div class="rate-detail">
+                    <h2>简介</h2>
+                    <p style=" margin-top:.05rem; text-indent:2em; font-size:.12rem; color:#666;" id="Introduce"></p>
+                    <span style="width:.42rem; left:50%; margin-left:-.21rem;"><em>展开</em><i class="icon-more-top"></i></span>
+                </div>
+            </div>
+            <div class="about-recommend">
+
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+    <div class="share-code" style=" -webkit-transition:all .4s ease; z-index:2;">
+        <i style=" background:url(/imgs/x.png) no-repeat; background-size:contain; position:absolute; left:0; top:0; width:.22rem; height:.22rem;"></i>
+        <img style="margin-left:.22rem;" src="/imgs/fenxiangerweimaguanzhu2@2x.png">
+        <p class="loadapp" style="width:3rem;"><img src="/imgs/logo@2x.png" alt="">下载链景旅行，免费听全球景点讲解</p>
+    </div>
+    <script>
+        //跳转
+        (function() {
+            var oA = document.querySelector('.scenic-tips a');
+            oA.addEventListener('tap', function() {
+                window.location.href = 'scenicShare.html';
+            }, false);
+        })();
+
+        //语言跳转链接（mui里的a默认跳转不好使）
+        //(function(){
+        //	var oA=document.querySelector('.mui-table-view-cell>a+a');
+        //	oA.addEventListener('tap',function(){
+        //		window.location.href=this.href;
+        //	},false);
+        //})();
+    </script>
+
+    <script>
+        //mui.init({
+        //	pullRefresh : {
+        //    	container:"#refreshContainer",//下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+        //		/*down : {
+        //			contentdown : "下拉可以刷新",//可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+        //			contentover : "释放立即刷新",//可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+        //			contentrefresh : "正在刷新...",//可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+        //			callback :pullUpFresh
+        //		},*/
+        //		up : {
+        //			contentrefresh : "正在加载...",//可选，正在加载状态时，上拉加载控件上显示的标题内容
+        //			contentnomore:'没有更多数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；
+        //			callback :pullDownFresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+        //		}
+        //	}
+        //});
+
+        //function pullUpFresh() {
+        //	//业务逻辑代码，比如通过ajax从服务器获取新数据；
+
+        //	setTimeout(function(){//定时器是我自己测试效果加的，你们绑数据可以不用
+        //		console.log(1);
+        //		 //注意，加载完新数据后，必须执行如下代码，注意：若为ajax请求，则需将如下代码放置在处理完ajax响应数据之后
+        //		mui('#refreshContainer').pullRefresh().endPulldownToRefresh();
+        //	},1000);
+        //}
+        //function pullDownFresh() {
+        //	//业务逻辑代码，比如通过ajax从服务器获取新数据；
+        //	//注意：
+        //	//1、加载完新数据后，必须执行如下代码，true表示没有更多数据了：
+        //	//2、若为ajax请求，则需将如下代码放置在处理完ajax响应数据之后
+        //	var _this=this;
+        //	setTimeout(function(){//定时器是我自己测试效果加的，你们绑数据可以不用
+        //		_this.endPullupToRefresh(false);
+        //		console.log(2);
+        //	},1000);
+        //}
+    </script>
+    <script>
+        //音频播放
+        (function() {
+            var aBtn = document.querySelectorAll('.story-title');
+            var oAudio = document.querySelector('.view-audio audio');
+            var oPlay = document.querySelector('.audio-btn span');
+            var oPlayTime = document.querySelector('.play-time');
+            var oAllTime = document.querySelector('.all-time');
+            var oBar = document.querySelector('.process-bar');
+            var oBufferBar = document.querySelector('.buffer-process');
+            var oPlayBar = document.querySelector('.play-process');
+            var oMoveBar = document.querySelector('.move-bar');
+            var oBuffBtn = document.querySelector('.play-btn');
+            var iLen = $(oBar).width();
+            var iLeft = oBar.getBoundingClientRect().left;
+
+
+            oAudio.preload = 'auto';
+
+
+
+            oAudio.addEventListener('durationchange', function() { //音频时长改变时
+                oAllTime.innerHTML = toTwo(parseInt(oAudio.duration / 60)) + ':' + toTwo(parseInt(oAudio.duration % 60));
+            }, false);
+
+            oAudio.addEventListener('progress', function() { //缓冲时长
+                oBufferBar.style.width = parseFloat(iLen) * oAudio.buffered.end(0) / oAudio.duration + 'px';
+            }, false);
+
+            oAudio.addEventListener('timeupdate', function() { //播放时音频时长
+                oPlayTime.innerHTML = toTwo(parseInt(oAudio.currentTime / 60)) + ':' + toTwo(parseInt(oAudio.currentTime % 60));
+                oPlayBar.style.width = iLen * (oAudio.currentTime / oAudio.duration) + 'px';
+                oBuffBtn.style.left = iLen * (oAudio.currentTime / oAudio.duration) - 3 + 'px';
+
+                if (oAudio.ended) {
+                    oPlayBar.style.width = 0;
+                    oPlayTime.innerHTML = '00:00';
+                    oBuffBtn.style.left = -4 + 'px';
+                    oPlay.style.backgroundImage = 'url(/imgs/fxbofang@2x.png)';
+                }
+
+
+            }, false);
+
+            if (oAudio.paused) {
+                oAudio.play();
+                oPlay.style.backgroundImage = 'url(/imgs/fxzanting@2x.png)';
+            }
+
+            document.addEventListener("WeixinJSBridgeReady", function() {
+                WeixinJSBridge.invoke('getNetworkType', {}, function(e) {
+                    if (oAudio.paused) {
+                        oAudio.play();
+                        oPlay.style.backgroundImage = 'url(/imgs/fxzanting@2x.png)';
+                    }
+                    /*else{
+                    					oAu.pause();
+                    				}*/
+
+                });
+            }, false);
+
+            //点击播放暂停
+            oPlay.addEventListener('touchstart', function() {
+                if (oAudio.paused) {
+                    oAudio.play();
+                    this.style.backgroundImage = 'url(/imgs/fxzanting@2x.png)';
+                } else {
+                    oAudio.pause();
+                    this.style.backgroundImage = 'url(/imgs/fxbofang@2x.png)';
+                }
+            }, false);
+
+
+            //滑动
+            var iStartX = 0;
+            var iMoveX = 0;
+            var iL = 0;
+
+            //oAudio.addEventListener('canplay',function(){//只有能播放状态时才能拖动或点击
+            oBuffBtn.addEventListener('touchstart', function(ev) {
+                iPageX = ev.changedTouches[0].pageX;
+                ev.stopPropagation();
+                return false;
+            }, false);
+
+            oBuffBtn.addEventListener('touchmove', function(ev) {
+                iMoveX = ev.changedTouches[0].pageX;
+                iL = iMoveX - iStartX - iLeft;
+
+                if (iL < 0) {
+                    iL = 0;
+                }
+                if (iL > (iLen - 5)) {
+                    iL = iLen - 5;
+                }
+
+                oBuffBtn.style.left = iL + 'px';
+                oAudio.currentTime = (oAudio.duration * iL / iLen);
+                ev.stopPropagation();
+                return false;
+            }, false);
+
+            oBuffBtn.addEventListener('touchend', function(ev) {
+                ev.stopPropagation();
+                return false;
+            }, false);
+
+            //点击播放条
+            oMoveBar.addEventListener('touchstart', function(ev) {
+                var oTouch = ev.changedTouches[0];
+                var iL = oTouch.pageX - iLeft;
+                oBuffBtn.style.left = iL + 'px';
+                oAudio.currentTime = (oAudio.duration * iL / iLen);
+                ev.stopPropagation();
+                return false;
+            }, false);
+
+
+
+            function getStyle(obj, attr) {
+                return obj.currentStyle ? obj.currentStyle[attr] : getComputedStyle(obj, false)[attr];
+            }
+
+            function toTwo(num) {
+                return num < 10 ? '0' + num : '' + num;
+            }
+
+        })();
+
+        //展开收缩
+        function OUTandIn() {
+            var oP = document.querySelector('.rate-detail p');
+            var oBtn = document.querySelector('.rate-detail span');
+            var oEm = document.querySelector('.rate-detail span em');
+            var oI = document.querySelector('.rate-detail span i');
+            var iLineH = parseInt($(oP).css('line-height'));
+            var iH = $(oP).height();
+            var onOff = true;
+
+
+
+
+            if (iH > (iLineH * 20)) {
+                oBtn.style.display = 'block';
+                oP.style.height = iLineH * 20 + 'px';
+            } else if (iH <= (iLineH * 20)) {
+                oBtn.style.display = 'none';
+                oP.parentNode.style.paddingBottom = '.07rem';
+            }
+
+            oBtn.addEventListener('touchstart', function() {
+                if (onOff) {
+                    oP.style.height = iH + 'px';
+                    oEm.innerHTML = '收起';
+                    oI.style.webkitTransform = 'rotate(0deg)';
+                } else {
+                    oP.style.height = iLineH * 20 + 'px';
+                    oEm.innerHTML = '展开';
+                    oI.style.webkitTransform = 'rotate(180deg)';
+                }
+                onOff = !onOff;
+            }, false);
+
+        }
+
+        //滑动函数
+        function hadong() {
+            var slider = mui("#slider");
+            slider.slider({
+                interval: 4000
+            });
+        }
+        //出现弹层和点击X消失
+        (function() {
+            var oWrap = document.querySelector('.wrap');
+            var oCon = document.querySelector('.share-code');
+            var oX = document.querySelector('.share-code i');
+            var oBtn = document.querySelector('.share-code img');
+            var opacity = document.querySelector('.share-opacity');
+            var oQr = document.querySelector('.qr-wrap span');
+            var iBtn;
+
+
+            var load = document.querySelector('.loadapp');
+            load.addEventListener('tap', function() {
+                window.location = "http://download.yjly.com/yjly.aspx";
+            }, false);
+
+            oX.addEventListener('click', function() {
+                oCon.style.opacity = 0;
+                oWrap.style.bottom = 0;
+                //oCon.style.webkitTransform='translate3d(0,100px,0)';
+
+            }, false);
+            oCon.addEventListener('webkitTransitionEnd', function() {
+                this.style.display = 'none';
+            }, false);
+
+            oBtn.addEventListener('click', function() {
+                opacity.style.display = 'block';
+                if (!$(opacity).hasClass('fadeIn')) {
+                    $(opacity).addClass('fadeIn');
+                    $(opacity).removeClass('zoomOut');
+                }
+                iBtn = 1;
+            }, false);
+
+            oQr.addEventListener('touchstart', function() {
+                if ($(opacity).hasClass('fadeIn')) {
+                    $(opacity).removeClass('fadeIn');
+                    $(opacity).addClass('zoomOut');
+                }
+                iBtn = 0;
+            }, false);
+
+            opacity.addEventListener('webkitAnimationEnd', function() {
+                if (iBtn) {
+                    opacity.style.display = 'block';
+                } else {
+                    opacity.style.display = 'none';
+                }
+            }, false);
+
+        })();
+    </script>
+
+</body>
+
+</html>

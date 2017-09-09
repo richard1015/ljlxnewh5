@@ -1,0 +1,481 @@
+/* LESS Document */
+
+/**********Instruction**********/
+//=============================================================================
+// @des:            css weChat files
+// @author:       	chengwei
+// @time:           2016-6-6
+// @lastTime     	2015-6-6
+// @version         0.1 beta
+// ============================================================================
+
+/*侧边栏索引*/
+.guide-index{
+	position:fixed;
+	right:-.05rem;
+	top:.88rem;
+	width:.4rem;
+	text-align:center;
+	z-index:2;
+	
+}
+
+
+.guide-index ul{
+}
+.guide-index li{
+	overflow:hidden;
+	position:relative;
+	
+}
+.guide-index li:first-of-type a{
+	height:.3rem !important;
+	padding-right:.12rem;
+	line-height:.3rem;
+	color:#16bcf8;
+	font-size:.12rem;
+}
+.guide-index a{
+	float:left;
+	width:100%;
+	font-size:.12rem;
+	height:100%;
+	color:#999;
+}
+.guide-index a.active{
+	position:relative;
+	color:#16bcf8;
+}
+.guide-index a.active span{
+	position:absolute;
+	right:0;
+	height:100%;
+	width:3px;
+	color:#16bcf8;
+	background:#16bcf8;
+}
+.tips-index{
+	position:fixed;
+	left:50%;
+	top:50%;
+	margin-left:-.35rem;
+	margin-top:-.35rem;
+	width:.7rem;
+	height:.7rem;
+	line-height:.7rem;
+	text-align:center;
+	color:#fff;
+	font-size:.26rem;
+	background:rgba(0,0,0,0.3);
+	border-radius:50%;
+	-webkit-transition:all .4s ease;
+	display:none;
+	z-index:2;
+}
+
+/*地区国家搜索*/
+.weChat-local-search{
+	position:relative;
+	width:100%;
+	height:.44rem;
+	padding:0 .12rem;
+	background:#fff;
+}
+.weChat-local-search>*{
+	float:left;
+}
+.weChat-local-search>.search-wrap{
+	position:relative;
+	width:3.51rem;
+	/*width:3.1rem;*/
+	height:.28rem;
+	margin-top:.08rem;
+	background:#fff;
+	border:1px solid #e8e8e8;
+	border-radius:4px;
+	overflow:hidden;
+	z-index:1;
+	-webkit-transition:all .4s ease;
+}
+.weChat-local-search>.search-wrap>*{
+	float:left;
+}
+.weChat-local-search i{
+	width:.35rem;
+	line-height:.28rem;
+	text-align:center;
+}
+.weChat-local-search input{
+	width:2.5rem;
+	height:.28rem;
+	font-size:.12rem;
+	border:none;
+}
+.weChat-local-search>span{
+	position:absolute;
+	right:0;
+	top:0;
+	width:.5rem;
+	height:.44rem;
+	line-height:.44rem;
+	text-align:center;
+	color:#16bcfa;
+	font-size:.12rem;
+	z-index:0;
+}
+
+/*首页搜索*/
+.weChat-search{
+	padding:0 .08rem;
+	width:100%;
+	height:.44rem;
+	line-height:.44rem;
+	border-bottom:1px solid #e8e8e8;
+}
+.weChat-search>*{
+	float:left;
+}
+.weChat-search .weChat-search-city{
+	
+}
+.weChat-search .weChat-search-city p{
+}
+.weChat-search .weChat-search-city span{
+	float:left;
+	max-width:.34rem;
+	margin-right:.06rem;
+	padding-left:.06rem;
+	color:#16bcf8;
+	line-height:.44rem;
+	white-space:nowrap; 
+	overflow:hidden; 
+	text-overflow:ellipsis;
+}
+.weChat-search .weChat-search-city i{
+	float:left;
+	line-height:.44rem;
+	color:#16bcf8;
+}
+.weChat-search .weChat-search-scence{
+	width:2.9rem;
+	height:.28rem;
+	margin-left:.12rem;
+	margin-top:.08rem;
+	text-align:center;
+	line-height:.3rem;
+	border:1px solid #e8e8e8;
+	background:#fff;
+	border-radius:5px;
+}
+.weChat-search .weChat-search-scence>*{
+	float:left;
+}
+.weChat-search .weChat-search-scence em{
+    position: absolute;
+    right: .7rem;
+    top: .17rem;
+    width: .13rem;
+    height: .13rem;
+    font-size: .14rem;
+    color: #999;
+    display: none;
+}
+.weChat-search .weChat-search-scence input{
+	width:2.4rem;
+	height:100%;
+	border:none;
+}
+.weChat-search .weChat-search-scence span{
+	height:.18rem;
+	width:.01rem;
+	margin-top:.05rem;
+	background:#e8e8e8;
+}
+.weChat-search .weChat-search-scence i{
+	width:.44rem;
+	height:.28rem;
+	line-height:.28rem;
+	text-align:center;
+}
+
+/*热门列表*/
+.weChat-hotCity{
+	width:100%;
+}
+.weChat-hotCity>*{}
+.weChat-hotCity>h2{
+	height:.3rem;
+	padding-left:.12rem;
+	line-height:.3rem;
+	color:#666;
+	font-size:.12rem;
+}
+.weChat-hotCity>div{
+	padding:.04rem 0;
+	padding-left:.12rem;
+	background:#fff;
+	overflow:hidden;
+}
+.weChat-hotCity>div span{
+	float:left;
+	width:1rem;
+	height:.3rem;
+	margin:.06rem .06rem .06rem 0;
+	padding:0 .1rem;
+	text-align:center;
+	line-height:.3rem;
+	border:1px solid #e8e8e8;
+	border-radius:3px;
+	white-space:nowrap; 
+	overflow:hidden; 
+	text-overflow:ellipsis;
+}
+
+/*国内省份列表*/
+.place-wrap{
+	width:100%;
+	position:absolute;
+	left:0;
+	top:0;
+	width:100%;
+}
+.place-wrap ul{
+	background:#fff;
+}
+.place-wrap ul li:not(.indexChar){
+	padding:.05rem .12rem;
+	overflow:hidden;
+}
+.place-wrap .indexChar{
+	height:.3rem;
+	padding-left:.12rem;
+	line-height:.3rem;
+	background:#f6f6f6;
+}
+.place-wrap .indexChar+.place-pub-style{
+	padding-top:.1rem;
+}
+.place-wrap .place-pub-style{
+}
+.place-wrap .place-pub-style:first-of-type{
+}
+.place-wrap ul li.group-last{
+	padding-bottom:.1rem;	
+}
+.place-wrap .place-pub-style a{
+	float:left;
+	width:100%;
+	height:100%;
+}
+.place-wrap .place-pub-style a>*{
+	float:left;
+}
+.place-wrap .place-pub-style a img{
+	width:.5rem;
+	height:.5rem;
+	border:1px solid #e5e5e5;
+	border-radius:4px;
+	overflow:hidden;
+}
+.place-wrap .place-pub-style a p{
+	padding-left:.1rem;
+	font-size:.14rem;
+	line-height:.5rem;
+	color:#222;
+}
+
+/*列表*/
+.weChat-sort-list span,.weChat-sort-list i{
+	color:#fff;
+}
+.weChat-sort-rule{
+	position:relative;
+	width:100%;
+	height:.44rem;
+	border-bottom:1px solid #e8e8e8;
+}
+.weChat-sort-rule li{
+	float:left;
+	width:1.25rem;
+	height:.44rem;
+	text-align:center;
+	line-height:.44rem;
+	font-size:.14rem;
+}
+.weChat-sort-rule i{
+	position:absolute;
+	bottom:-1px;
+	left:0;
+	width:1.25rem;
+	height:2px;
+	background:#17bbf8;
+	-webkit-transition:all .3s ease-in-out;
+	
+}
+.weChat-sort-rule li span{
+	float:right;
+	width:1px;
+	height:.24rem;
+	background:#e8e8e8;
+	margin-top:.1rem;
+}
+.weChat-sort-rule li.active{
+	color:#16bcfa;
+}
+
+.weChat-sort-list{
+	position:absolute;
+	top:.44rem;
+	bottom:0;
+	width:100%;
+	overflow:auto;
+}
+.weChat-sort-list ul{
+	width:100%;
+	padding:0 .12rem;
+	padding-bottom:.1rem;
+}
+.weChat-sort-list li{
+	margin-top:.1rem;
+}
+.weChat-sort-list .img-con{
+	position:relative;
+	height:1.5rem;
+	border-radius:6px;
+	overflow:hidden;
+}
+.weChat-sort-list .img-con img{
+	width:3.51rem;
+}
+.weChat-sort-list .img-con .bg-panel{
+	position:absolute;
+	left:0;
+	top:0;
+	width:100%;
+	height:1.5rem;
+	background:rgba(0,0,0,0.3);
+	z-index:10;
+}
+.weChat-sort-list .img-con .bg-panel>*{
+	text-align:center;
+	color:#fff;
+}
+.weChat-sort-list .img-con h2{
+	margin-top:.56rem;
+	font-size:.16rem;
+	font-weight:bold;
+}
+.weChat-sort-list .img-con p{
+}
+.weChat-sort-list .img-con p.scenic-about{
+	margin-top:.1rem;
+}
+.weChat-sort-list .img-con p.scenic-about span{}
+.weChat-sort-list .img-con p.scenic-about i{
+	display:inline-block;
+	height:.12rem;
+	width:1px;
+	margin:0 5px;
+	background:#fff;
+}
+.weChat-sort-list .img-con p.listen-count{
+	position:absolute;
+	right:0;
+	bottom:0;
+	padding:0 8px;
+	height:.2rem;
+	line-height:.2rem;
+	background:rgba(0,0,0,0.4);
+	border-radius:.1rem 0 0 .1rem;
+}
+.weChat-sort-list .img-con p.listen-count i{
+}
+.weChat-sort-list .scenic-introduce{
+	margin-top:.07rem;
+	line-height:.18rem;
+}
+
+/************以下是评论*************/
+ul.comment-con{
+}
+ul.comment-con p{
+	font-size:.12rem;
+}
+ul.comment-con li{
+	padding:.15rem .12rem;
+	border-bottom:1px solid #e8e8e8;
+	overflow:hidden;
+}
+ul.comment-con li>*{
+	float:left;
+}
+ul.comment-con aside{
+	width:.35rem;
+	height:.35rem;
+	margin:0 .03rem;
+	border-radius:50%;
+	overflow:hidden;
+}
+ul.comment-con aside img{
+	width:.35rem;
+	height:.35rem;
+}
+ul.comment-con section{
+	width:2.98rem;
+	margin-left:.12rem;
+}
+ul.comment-con .star-mark{}
+ul.comment-con .star-mark h6{
+	margin-top:3px;
+	line-height:.18rem;
+	font-size:.14rem;
+	color:#fa9732;
+}
+ul.comment-con .star-mark p{
+	margin-top:2px;
+	overflow:hidden;
+}
+ul.comment-con .star-mark p>*{
+	float:left;
+	margin-right:.15rem;
+}
+ul.comment-con .star-mark p span{}
+ul.comment-con .star-mark p i{}
+ul.comment-con .star-mark p em{}
+ul.comment-con .comment-detail{
+	position:relative;
+	padding-bottom:.2rem;
+}
+ul.comment-con .comment-detail p{
+	margin-top:.15rem;
+	width:2.98rem;
+	line-height:.18rem;
+	overflow:hidden;
+	-webkit-transition:all .3s ease;
+}
+ul.comment-con .comment-detail span{
+	position:absolute;
+	right:0;
+	bottom:0;
+	color:#18baf8;
+}
+ul.comment-con .comment-detail em{
+	margin-right:5px;
+	font-size:.12rem;
+	color:#18baf8;
+}
+ul.comment-con .comment-detail i{
+	display:inline-block;
+	font-size:.12rem;
+	-webkit-transform:rotate(180deg);
+}
+ul.comment-con .comment-reply{
+	margin-top:.1rem;
+}
+ul.comment-con .comment-reply span{
+	font-size:.12rem;
+	color:#18baf8;
+}
+ul.comment-con .comment-reply p{
+	line-height:.18rem;
+}

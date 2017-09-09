@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html ng-app="tipIndex">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="HandheldFriendly" content="true">
+    <meta name="MobileOptimized" content="width">
+    <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <title>简介</title>
+    <link href="/css/tip.css" rel="stylesheet" />
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/js.config.js"></script>
+    <script type="text/javascript">
+        //初始化html字体大小为100px(iPhone6下)，可以自适应
+        // $('html').css('font-size', $('html')[0].clientWidth / 3.75);
+        var app = angular.module("tipIndex", []);
+        app.controller("ScenicTipCtrl", ['$scope', '$http', '$sce', function($scope, $http, $sce) {
+            var initData = function() {
+                $scope.Id = request("ID");
+                $scope.language = request("language"); //语言
+                $scope.version = request("version"); //版本
+                $scope.type = request("type"); //来源
+                //请求对象
+                var obj = new Object();
+                obj.ScenicId = $scope.Id;
+                var url = "/serverH5";
+                $http.post(url, {
+                    cmd: "H5ScenicDetailsById",
+                    param: JSON.stringify(obj)
+                }).success(function(data) {
+                    if (data.State == 0) {
+                        $scope.infoData = data.Value;
+                    }
+                });
+            }
+            initData();
+        }]);
+    </script>
+</head>
+
+<body ng-controller="ScenicTipCtrl as stCtrl">
+    <video ng-if="infoData.VoiceState" style="left: 0;top: 0;width: 100%;height: 100%;" ng-src="{{infoData.VoiceUrl}}" poster="{{infoData.VideoCover}}" controls="controls"></video>
+    <!--营业时间-->
+    <div class="tip-row">
+        <div class="tip-title">
+            <i style="background:url(/imgs/tip/yingyeshijian.png) no-repeat; background-size:contain;"></i>
+            <h3>营业时间</h3>
+        </div>
+        <div class="tip-detail">
+            <p ng-bind="infoData.OpenTime">
+
+            </p>
+        </div>
+    </div>
+    <!--票价详情-->
+    <div class="tip-row">
+        <div class="tip-title">
+            <i style="background:url(/imgs/tip/piaojiaxiangqing.png) no-repeat; background-size:contain;"></i>
+            <h3>票价详情</h3>
+        </div>
+        <div class="tip-detail">
+            <p ng-bind="infoData.PriceDesc">
+
+            </p>
+        </div>
+    </div>
+    <!--小贴士-->
+    <div class="tip-row">
+        <div class="tip-title">
+            <i style="background:url(/imgs/tip/xiaotieshi.png) no-repeat; background-size:contain;"></i>
+            <h3>小贴士</h3>
+        </div>
+        <div class="tip-detail">
+            <p ng-bind="infoData.Suitable">
+
+            </p>
+        </div>
+    </div>
+    <!--景点介绍-->
+    <div class="tip-row">
+        <div class="tip-title">
+            <i style="background:url(/imgs/tip/jingdianjieshao.png) no-repeat; background-size:contain;"></i>
+            <h3>景点介绍</h3>
+        </div>
+        <div class="tip-detail">
+            <p ng-bind="infoData.Introduce">
+
+            </p>
+        </div>
+    </div>
+    <!--景区地址-->
+    <div class="tip-row">
+        <div class="tip-title">
+            <i style="background:url(/imgs/tip/jingqudizhi.png) no-repeat; background-size:contain;"></i>
+            <h3>景区地址</h3>
+        </div>
+        <div class="tip-detail">
+            <p ng-bind="infoData.Address">
+
+            </p>
+        </div>
+    </div>
+    <!--交通方式-->
+    <div class="tip-row">
+        <div class="tip-title">
+            <i style="background:url(/imgs/tip/jiaotongfangshi.png) no-repeat; background-size:contain;"></i>
+            <h3>交通方式</h3>
+        </div>
+        <div class="tip-detail">
+            <p ng-bind="infoData.Traffic">
+
+            </p>
+        </div>
+    </div>
+    <!--电话咨询-->
+    <div class="tip-row">
+        <div class="tip-title">
+            <i style="background:url(/imgs/tip/dianhuazixun.png) no-repeat; background-size:contain;"></i>
+            <h3>电话咨询</h3>
+        </div>
+        <div class="tip-detail">
+            <p ng-bind="infoData.Telephone">
+
+            </p>
+        </div>
+    </div>
+    <!--温馨提示-->
+    <!-- <div class="tip-row">
+        <div class="tip-title">
+            <i style="background:url(/imgs/tip/wenxintishi.png) no-repeat; background-size:contain;"></i>
+            <h3>温馨提示</h3>
+        </div>
+        <div class="tip-detail">
+            <p ng-bind="infoData.Tips">
+
+            </p>
+        </div>
+    </div> -->
+</body>
+
+</html>

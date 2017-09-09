@@ -1,0 +1,501 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="MobileOptimized" content="width">
+    <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <title>地区</title>
+    <link href="/css/animate.css" rel="stylesheet">
+    <link href="/css/mui.css" rel="stylesheet">
+    <link href="/css/mui.indexedlist.css" rel="stylesheet" />
+    <link href="/css/yjzh.css" rel="stylesheet">
+    <!--此页面此引用weChat.less-->
+    <link href="/css/font.css" rel="stylesheet">
+    <script src="/js/zepto.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/mui.min.js"></script>
+    <script src="/js/CityHot.js"></script>
+    <script src="/js/City.js"></script>
+    <script src="/js/toChina.js"></script>
+
+    <!--<script src="../../js/baidutongji.js"></script>-->
+    <style>
+        .wrap {
+            top: .88rem;
+            bottom: .6rem;
+        }
+        
+        .mui-content {}
+        
+        .mui-scroll {
+            padding: 0;
+        }
+        
+        .mui-indexed-list-search {
+            display: none;
+        }
+        
+        .mui-indexed-list-group {
+            height: .3rem;
+            line-height: .3rem;
+        }
+        
+        .mui-table-view-divider,
+        .mui-table-view-cell {
+            position: static;
+        }
+        
+        .weChat-sort-rule {
+            background: #fff;
+        }
+        
+        .weChat-sort-rule li {
+            width: 50%;
+        }
+        
+        .weChat-sort-rule i {
+            width: 50%;
+        }
+        
+        .guide-index.active {
+            width: .55rem;
+        }
+        
+        .guide-index.active a {
+            text-align: right;
+            padding-right: .15rem;
+            right: 0;
+        }
+        
+        .tips-index.active {
+            font-size: .18rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="weChat-search" style="padding:0 .12rem;">
+        <div class="weChat-search-scence" style="width:3.51rem; margin-left:0;">
+            <input type="text" style="width:2.99rem;" placeholder="请输入国内城市">
+            <span></span>
+            <i class="icon-top-search"></i>
+        </div>
+    </div>
+    <div class="share-opacity animated">
+        <div class="qr-wrap">
+            <h3>关注链景旅行</h3>
+            <p>全世界的景点都在这里！没逗你！</p>
+            <img src="../../imgs/gongzhonghaoerweima.jpg" alt="code">
+            <p>长按关注公众号听讲解</p>
+            <span></span>
+        </div>
+    </div>
+
+    <div class="weChat-sort-rule">
+        <ul>
+            <li class="active">国内<span></span></li>
+            <li>海外</li>
+        </ul>
+        <i></i>
+    </div>
+
+
+    <span class="tips-index active"></span>
+    <!--此处如果是世界则class加上active-->
+    <aside class="guide-index">
+        <!--此处如果是世界则class加上active-->
+        <ul class="city-list-aside">
+
+            <!--此处是国内城市-->
+            <!--<li><a data-str='hot' href="#">热门<span></span></a></li><!--这一个li永远都有-->
+            <!--<li><a data-str='A' href="#">A<span></span></a></li>
+    	<li><a data-str='B' href="#">B<span></span></a></li>
+    	<li><a data-str='C' href="#">C<span></span></a></li>
+    	<li><a data-str='D' href="#">D<span></span></a></li>
+    	<li><a data-str='E' href="#">E<span></span></a></li>
+    	<li><a data-str='F' href="#">F<span></span></a></li>
+    	<li><a data-str='G' href="#">G<span></span></a></li>
+    	<li><a data-str='H' href="#">H<span></span></a></li>
+    	<li><a data-str='I' href="#">I<span></span></a></li>
+    	<li><a data-str='J' href="#">J<span></span></a></li>
+    	<li><a data-str='K' href="#">K<span></span></a></li>
+    	<li><a data-str='L' href="#">L<span></span></a></li>
+    	<li><a data-str='M' href="#">M<span></span></a></li>
+    	<li><a data-str='N' href="#">N<span></span></a></li>
+    	<li><a data-str='O' href="#">O<span></span></a></li>
+    	<li><a data-str='P' href="#">P<span></span></a></li>
+    	<li><a data-str='Q' href="#">Q<span></span></a></li>
+    	<li><a data-str='R' href="#">R<span></span></a></li>
+    	<li><a data-str='S' href="#">S<span></span></a></li>
+    	<li><a data-str='T' href="#">T<span></span></a></li>
+    	<li><a data-str='U' href="#">U<span></span></a></li>
+    	<li><a data-str='V' href="#">V<span></span></a></li>
+    	<li><a data-str='W' href="#">W<span></span></a></li>
+    	<li><a data-str='X' href="#">X<span></span></a></li>
+    	<li><a data-str='Y' href="#">Y<span></span></a></li>
+    	<li><a data-str='Z' href="#">Z<span></span></a></li>-->
+
+            <!--此处是世界城市-->
+
+            <!--<li style="margin-top:.3rem;"><a data-str='gat' href="#">港澳台<span></span></a></li>
+    	<li><a data-str='yz' href="#">亚洲<span></span></a></li>
+    	<li><a data-str='oz' href="#">欧洲<span></span></a></li>
+    	<li><a data-str='dyz' href="#">大洋洲<span></span></a></li>
+    	<li><a data-str='bmz' href="#">北美洲<span></span></a></li>
+    	<li><a data-str='nmz' href="#F">南美洲<span></span></a></li>
+    	<li><a data-str='fz' href="#G">非洲<span></span></a></li>
+    	<li><a data-str='njz' href="#H">南极洲<span></span></a></li>-->
+        </ul>
+    </aside>
+    <div class="wrap">
+        <div class="place-wrap china">
+            <div class="weChat-hotCity">
+                <h2 data-id="hot">热门城市</h2>
+                <div class="hotCity-wrap">
+                    <!-- <span>北京</span>
+            <span>北京</span>
+            <span>北京</span>
+            <span>北京</span>
+            <span>北京</span>
+            <span>北京</span>
+            <span>北京</span>
+            <span>北京</span>
+            <span>北京</span>-->
+                </div>
+            </div>
+            <!--此处是国家城市-->
+            <ul class="city-list-wrap">
+                <!--<li data-id="A" class="indexChar">A</li>
+            <li class="place-pub-style city">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+            <li class="place-pub-style city">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+            <li class="place-pub-style city">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+        	<li data-id="B" class="indexChar">B</li>
+            <li class="place-pub-style city">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+            <li class="place-pub-style city">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+            <li class="place-pub-style city">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+        	<li data-id="C" class="indexChar">C</li>
+            <li class="place-pub-style city">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+            <li class="place-pub-style city">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+            <li class="place-pub-style city">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+        	<li data-id="D" class="indexChar">D</li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+        	<li data-id="E" class="indexChar">E</li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+        	<li data-id="F" class="indexChar">F</li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+        	<li data-id="G" class="indexChar">G</li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+        	<li data-id="H" class="indexChar">H</li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+        	<li data-id="I" class="indexChar">I</li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+        	<li data-id="J" class="indexChar">J</li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+        	<li data-id="K" class="indexChar">K</li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+        	<li data-id="L" class="indexChar">L</li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+        	<li data-id="M" class="indexChar">M</li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+        	<li data-id="N" class="indexChar">N</li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+        	<li data-id="O" class="indexChar">O</li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+        	<li data-id="P" class="indexChar">P</li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+        	<li data-id="Q" class="indexChar">Q</li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+        	<li data-id="R" class="indexChar">R</li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+        	<li data-id="S" class="indexChar">S</li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+        	<li data-id="T" class="indexChar">T</li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+        	<li data-id="U" class="indexChar">U</li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+        	<li data-id="V" class="indexChar">V</li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+        	<li data-id="W" class="indexChar">W</li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+        	<li data-id="X" class="indexChar">X</li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+        	<li data-id="Y" class="indexChar">Y</li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+        	<li data-id="Z" class="indexChar">Z</li>
+            <li class="place-pub-style city group-last">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>-->
+            </ul>
+
+            <!--此处是世界城市-->
+            <!-- <ul>
+        	<li data-id="gat" class="indexChar">港澳台</li>
+            <li class="place-pub-style city">
+            	<a href="#">
+                	<img src="../../images/1.jpg" alt="">
+                    <p>北京</p>
+                </a>
+            </li>
+            
+        </ul>-->
+        </div>
+    </div>
+    <div class="share-code" style=" -webkit-transition:all .4s ease; z-index:2;">
+        <i style=" background:url(../../imgs/x.png) no-repeat; background-size:contain; position:absolute; left:0; top:0; width:.22rem; height:.22rem;"></i>
+        <img style="margin-left:.22rem;" src="../../imgs/fenxiangerweimaguanzhu2@2x.png">
+        <p class="loadapp" style="width:3rem;"><img src="../../imgs/logo@2x.png" alt="">下载链景旅行，免费听全球景点讲解</p>
+    </div>
+
+    <!--<script src="../../js/country.js"></script>-->
+
+    <script>
+        //热门
+        //(function(){
+        //	var oCon=document.querySelector('.hotCity-wrap');
+        //	var str='';
+        //	hotCity.forEach(function(item,index){
+        //		str+='<span>'+item.Name+'</span>'
+        //	});
+        //	
+        //	oCon.innerHTML=str;
+        //})();
+    </script>
+
+    <script src="/js/search.js"></script>
+    <script>
+        //出现弹层和点击X消失
+        (function() {
+            var oCon = document.querySelector('.share-code');
+            var oX = document.querySelector('.share-code i');
+            var oBtn = document.querySelector('.share-code img');
+            var opacity = document.querySelector('.share-opacity');
+            var oQr = document.querySelector('.qr-wrap span');
+            var iBtn;
+
+
+            var load = document.querySelector('.loadapp');
+            load.addEventListener('tap', function() {
+                window.location = "http://download.yjly.com/yjly.aspx";
+            }, false);
+
+
+            oX.addEventListener('click', function() {
+                oCon.style.opacity = 0;
+                //oCon.style.webkitTransform='translate3d(0,100px,0)';
+
+            }, false);
+            oCon.addEventListener('webkitTransitionEnd', function() {
+                this.style.display = 'none';
+            }, false);
+
+            oBtn.addEventListener('click', function() {
+                opacity.style.display = 'block';
+                if (!$(opacity).hasClass('fadeIn')) {
+                    $(opacity).addClass('fadeIn');
+                    $(opacity).removeClass('zoomOut');
+                }
+                iBtn = 1;
+            }, false);
+
+            oQr.addEventListener('click', function() {
+                if ($(opacity).hasClass('fadeIn')) {
+                    $(opacity).removeClass('fadeIn');
+                    $(opacity).addClass('zoomOut');
+                }
+                iBtn = 0;
+            }, false);
+
+            opacity.addEventListener('webkitAnimationEnd', function() {
+                if (iBtn) {
+                    opacity.style.display = 'block';
+                } else {
+                    opacity.style.display = 'none';
+                }
+            }, false);
+        })();
+    </script>
+</body>
+
+</html>

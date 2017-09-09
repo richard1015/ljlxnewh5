@@ -1,0 +1,197 @@
+/* LESS Document */
+/**********Instruction**********/
+.share-open {
+  width: 100%;
+  height: .54rem;
+  border-bottom: 1px solid #e8e8e8;
+  background: #ffffff url(../images/share-open.png) no-repeat 0.12rem 0;
+  background-size: contain;
+  position: relative;
+}
+.share-open a {
+  width: .7rem;
+  height: .28rem;
+  position: absolute;
+  right: .12rem;
+  top: .12rem;
+  font-size: .12rem;
+  color: #fa942f;
+  line-height: .28rem;
+  text-align: center;
+  border: 1px solid #fa942f;
+  border-radius: 3px;
+}
+.share-audio {
+  height: 1.12rem;
+  background: #fff;
+  overflow: hidden;
+}
+.share-audio li {
+  position: relative;
+  font-size: .14rem;
+  background: #fff;
+}
+.share-audio li:first-of-type {
+  height: .4rem;
+  line-height: .4rem;
+  color: #fa942f;
+  text-indent: .12rem;
+}
+.share-pic {
+  width: 2.5rem;
+}
+.share-mp3 {
+  position: absolute;
+  right: 0rem;
+  top: 0rem;
+  width: .74rem;
+}
+.share-mp3 span {
+  display: block;
+  width: .28rem;
+  height: .28rem;
+  margin-top: .05rem;
+  margin-left: .23rem;
+  margin-bottom: .1rem;
+  background: url(../imgs/fenxiangbofang@2x.png) no-repeat;
+  background-size: contain;
+}
+.share-mp3 p {
+  text-align: center;
+  color: #17bbf8;
+}
+.share-line {
+  position: absolute;
+  right: .74rem;
+  top: .1rem;
+  width: 1px;
+  height: .42rem;
+  background-color: #e8e8e8;
+}
+.share-map {
+  width: 100%;
+  height: 4.5rem !important;
+  border-top: 1px solid #e8e8e8;
+}
+.share-code {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: .6rem;
+  border-top: 1px solid #e8e8e8;
+  background: #0c0c0c;
+}
+.share-code > * {
+  float: left;
+}
+.share-code > img {
+  width: .25rem;
+  height: .25rem;
+  margin-left: .12rem;
+  margin-top: .17rem;
+}
+.share-code > p {
+  float: right;
+  width: 3.1rem;
+  height: .4rem;
+  border-radius: .2rem;
+  background: #f86342;
+  margin-right: .12rem;
+  margin-top: .1rem;
+  font-size: .14rem;
+  color: #fff;
+  text-indent: 4.2em;
+  line-height: .41rem;
+  position: relative;
+}
+.share-code > p > a {
+  color: #fff;
+}
+.share-code > p img {
+  position: absolute;
+  top: .04rem;
+  left: .1rem;
+  width: .3rem;
+  height: .3rem;
+}
+.share-opacity {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 501;
+  display: none;
+}
+.share-opacity .qr-wrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -1.5rem;
+  width: 3rem;
+  height: 3rem;
+  background: #fff;
+  border-radius: 10px;
+}
+.share-opacity .qr-wrap > * {
+  text-align: center;
+}
+.share-opacity .qr-wrap h3 {
+  font-size: .16rem;
+  line-height: .3rem;
+  margin-top: .3rem;
+}
+.share-opacity .qr-wrap img {
+  width: 1.3rem;
+  height: 1.3rem;
+  margin-left: .85rem;
+  margin-top: .14rem;
+}
+.share-opacity .qr-wrap p:first-of-type {
+  line-height: .28rem;
+  font-size: .14rem;
+}
+.share-opacity .qr-wrap p:last-of-type {
+  color: #999;
+  margin-top: .2rem;
+  font-size: .14rem;
+}
+.share-opacity span {
+  position: absolute;
+  top: .1rem;
+  right: .1rem;
+  width: .2rem;
+  height: .2rem;
+  background: url(../imgs/guanbi@2x.png) no-repeat;
+  background-size: contain;
+}
+.map-pic {
+  position: absolute;
+  z-index: 1;
+  top: .1rem;
+  left: .12rem;
+}
+.map-pic li {
+  margin-bottom: .1rem;
+}
+.map-pic li:first-of-type img {
+  width: .55rem;
+  height: auto;
+}
+.map-pic li img {
+  width: .42rem;
+  height: .42rem;
+}
+.gps-gps {
+  position: absolute;
+  right: .12rem;
+  top: 2.4rem;
+  width: .42rem;
+  height: .42rem;
+  z-index: 1;
+}
+.gps-gps img {
+  width: .42rem;
+  height: .42rem;
+}

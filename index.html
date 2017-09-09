@@ -1,0 +1,634 @@
+<html ng-app="WeChatIndex">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="MobileOptimized" content="width">
+    <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <title>免费听全球景点讲解</title>
+    <link href="/css/animate.css" rel="stylesheet">
+    <link href="/css/mui.css" rel="stylesheet">
+    <link href="/css/yjzh.css" rel="stylesheet">
+    <!--此页面此引用weChat.less-->
+    <link href="/css/font.css" rel="stylesheet">
+
+    <!--引入Google地图-->
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.3&key=9881f54fcf6190e4adf3b4bd864b940c&plugin=AMap.Geocoder"></script>
+    <script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
+    <!--引入Google地图-->
+    <script src="/js/baidutongji.js"></script>
+    <script src="/js/zepto.min.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/mui.js"></script>
+    <!--引入angular-->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/angular.min.js"></script>
+    <!--引入angular-->
+    <script src="/js/js.config.js"></script>
+    <script type="text/javascript">
+        function return_load() {
+            window.location = "http://download.yjly.com/yjly.aspx";
+        }
+    </script>
+    <script type="text/javascript">
+        //google定位使用变量
+        var map, geolocation, lnglatXY = "",
+            City = "",
+            CityId = "";
+        if (request("City") != null) {
+            City = request("City");
+            CityId = request("CityId");
+            $('#City').html(City);
+        }
+        var PageIndex = 1;
+        var IsTags = 2; // 2  表示人热门景区 3 表示附近景区
+        var keyword = "";
+        var PageSize = 10;
+
+        var app = angular.module("WeChatIndex", []);
+        //添加监听事件
+        app.directive('onFinishRenderFilters', function($timeout) {
+            return {
+                restrict: 'A',
+                link: function(scope, element, attr) {
+                    if (scope.$last === true) {
+                        $timeout(function() {
+                            scope.$emit('ngRepeatFinished');
+                        });
+                    }
+                }
+            }
+        });
+        app.controller("FunctionCarouselCtrl", ['$scope', '$http', function($scope, $http) {
+            $scope.SetSearch = function() {
+                //搜索按钮
+                var aLi = document.querySelector('.icon-top-search');
+                aLi.addEventListener('click', function() {
+                    $(".weChat-foot").hide();
+                    mui('#refreshContainer').pullRefresh().scrollTo(0, 0, 1000); //滚动到顶部
+                    //window.scrollTo(0, 1000);
+                    window.scrollTo(0, 0);
+                    keyword = document.getElementById("Seach").value;
+                    PageIndex = 1;
+                    //  console.log(keyword);
+                    arrayObj = new Array();
+                    if (keyword == "") {
+                        $scope.GetScenicList(City, lnglatXY, null, "Search");
+                    } else {
+                        $scope.GetScenicList(City, lnglatXY, null, "Search");
+                    }
+                });
+                //关闭叉
+                var oInp = document.querySelector('.weChat-search-scence input');
+                var oEm = document.querySelector('.weChat-search-scence em');
+                oInp.addEventListener('input', function() {
+                    if (this.value.length != 0) {
+                        oEm.style.display = 'block';
+                    } else {
+                        oEm.style.display = 'none';
+                    }
+                }, false);
+                oInp.addEventListener('focus', function() {
+                    if (this.value.length != 0) {
+                        oEm.style.display = 'block';
+                    } else {
+                        oEm.style.display = 'none';
+                    }
+                }, false);
+
+                //oInp.addEventListener('blur', function () {
+                //    oEm.style.display = 'none';
+                //}, false);
+
+                oEm.addEventListener('click', function() {
+
+                    keyword = "";
+
+                    oInp.value = '';
+                    this.style.display = 'none';
+
+                }, false);
+            };
+            $scope.SetSearch();
+            var arrayObj = new Array();
+            //定义异步加载数据方法
+            $scope.GetScenicList = function(res1, res2, jr, type) {
+                if (res1 == "") {
+                    window.location = "/views/country.html";
+                }
+
+                if (type != "up") {
+
+                    $scope.showTop();
+                }
+                if (type == "down") {
+                    $scope.clearTop();
+                    $(".weChat-refresh-bg").hide();
+                }
+                var obj = new Object();
+                obj.Code = CityId;
+                obj.Name = document.getElementById("Seach").value;
+                // if (type == "Search" && keyword != "") {
+                //     obj.Name = "";
+                // }
+                // if (obj.Name != "") {
+                //     obj.Name = "";
+                // }
+                obj.Lon = res2[0];
+                obj.Lat = res2[1];
+                obj.PageIndex = PageIndex;
+                obj.PageSize = PageSize;
+                obj.Tags = IsTags;
+                var url = "/serverH5";
+                $http.post(url, {
+                    cmd: "H5ScenicList",
+                    param: JSON.stringify(obj)
+                }).success(function(data) {
+                    if (data.State == "0") {
+                        console.log(data);
+                        $(".weChat-foot").hide();
+                        $(".weChat-sort-list").show();
+                        var arr = data.Value;
+                        if (PageIndex != 1) {
+                            arrayObj = arrayObj.concat(arr);
+                        } else {
+                            arrayObj = arr;
+                        }
+                        $scope.data = arrayObj;
+                        //      $scope.data=jQuery.parseJSON(data.value);
+                        var i = 0;
+                        for (i = 0; i < $scope.data.length; i++) {
+                            if ($scope.data[i].Distance > 0) {
+                                if ($scope.data[i].Distance > 900000) {
+                                    $scope.data[i].Distance = $scope.data[i].CAName;
+                                } else if ($scope.data[i].Distance > 1000 && $scope.data[i].Distance < 900000) {
+                                    $scope.data[i].Distance = ($scope.data[i].Distance / 1000).toFixed(2) + 'km';
+                                } else {
+                                    $scope.data[i].Distance = $scope.data[i].Distance.toFixed(0) + 'm';
+                                }
+                            }
+                        }
+                    } else {
+
+                        $scope.clearTop();
+                        //搜索秘书
+                        if (keyword != "" && PageIndex == 1) {
+
+
+
+                            $(".weChat-foot").show();
+
+
+                            $(".weChat-refresh-bg").hide();
+                            $(".weChat-sort-list").hide();
+                            //   alert("对不起，没有你要选择的数据！");
+                            //清空数据
+                            //var conMain = document.querySelector("#refreshContainer");
+                            //conMain.innerHTML = "";
+
+                        }
+                        if (keyword == "" && PageIndex == 1) {
+                            $scope.data = [];
+                            $(".weChat-foot").show();
+
+
+                            $(".weChat-refresh-bg").hide();
+                            $(".weChat-sort-list").hide();
+                        }
+
+                        //if (type == "down")
+                        //{
+                        //    jr.endPullupToRefresh(false);
+                        //}
+                    }
+
+                    //上拉
+                    if (type == "down") {
+                        //if (arrayObj.length < PageSize) {
+                        //    jr.endPullupToRefresh(true);
+                        //} else {
+                        //    jr.endPullupToRefresh(false);
+                        //}
+
+                        jr.endPullupToRefresh(false);
+
+                    }
+                    //下拉
+                    if (type == "up") {
+                        mui('#refreshContainer').pullRefresh().endPulldownToRefresh();
+                        // $("#ullist li").remove();
+                    }
+
+                });
+            };
+            //上拉
+            $scope.pullUpFresh = function() {
+
+
+                PageIndex = 1;
+                arrayObj = new Array();;
+                $scope.GetScenicList(City, lnglatXY, null, "up");
+            };
+            //下拉
+            $scope.pullDownFresh = function() {
+
+
+
+                $scope.clearTop();
+                var _this = this;
+                PageIndex += 1;
+                $scope.GetScenicList(City, lnglatXY, _this, "down");
+            }
+            $scope.loadjiazai = function() {
+                mui.init({
+                    pullRefresh: {
+                        container: "#refreshContainer", //下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+                        down: {
+                            contentdown: "下拉可以刷新", //可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+                            contentover: "释放立即刷新", //可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+                            contentrefresh: "正在刷新...", //可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+                            callback: $scope.pullUpFresh
+                        },
+                        up: {
+                            contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+                            contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+                            callback: $scope.pullDownFresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+                        }
+                    }
+                });
+            };
+            $scope.clearTop = function() {
+                //var showtitle = document.querySelector(".weChat-refresh-bg");
+                //setTimeout(function () {
+                //    showtitle.style.display = "none";
+                //}, 500);
+                var context = document.querySelector(".weChat-sort-list");
+                context.style.marginTop = 0;
+            }
+            $scope.showTop = function() {
+                $(".weChat-refresh-bg").show();
+                var context = document.querySelector(".weChat-sort-list");
+                context.style.marginTop = ".8rem";
+            }
+
+            //当循环加载完成后，添加点击事件
+            $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
+                //列表跳转函数
+                (function() {
+
+                    var aLi = document.querySelectorAll('.mui-scroll li');
+
+                    for (var i = 0; i < aLi.length; i++) {
+                        (function(index) {
+                            aLi[index].addEventListener('tap', function() {
+
+                                window.location = "/views/scenic.html?id=" + this.id + "&name=" + escape(this.getAttribute("name"));
+                            }, false);
+                        })(i);
+                    }
+
+                })();
+
+                //刷新函数
+                $scope.loadjiazai();
+                //关闭异步标签
+                //var showtitle = document.querySelector(".weChat-refresh-bg");
+                //setTimeout(function () {
+                //    showtitle.style.display = "none";
+                //}, 500);
+                var context = document.querySelector(".weChat-sort-list");
+                context.style.marginTop = 0;
+            });
+
+            if (window.localStorage.getItem("ljposition")) {
+                var infoLocalStorage = JSON.parse(window.localStorage.getItem("ljposition"));
+                City = infoLocalStorage.City;
+                lnglatXY = infoLocalStorage.lnglatXY;
+                CityId = infoLocalStorage.CityId;
+                if (request("City") != null && request("City") != "") {
+                    City = request("City");
+                    CityId = request("CityId");
+                    $('#City').html(City);
+                    window.localStorage.setItem("ljposition", JSON.stringify({
+                        lnglatXY: lnglatXY,
+                        City: City,
+                        CityId: CityId
+                    }));
+                }
+                $scope.GetScenicList(City, lnglatXY, null, "");
+                $('#City').html(City);
+            } else {
+                var temp = setInterval(function() {
+                    switch (state) {
+                        case 0:
+                            //定位成功
+                            clearInterval(temp);
+                            $scope.GetScenicList(City, lnglatXY, null, "");
+                            $('#City').html(City);
+
+                            window.localStorage.setItem("ljposition", JSON.stringify({
+                                lnglatXY: lnglatXY,
+                                City: City,
+                                CityId: CityId
+                            }));
+
+
+                            break;
+                            //定位失败
+                        case 1:
+                            alert("定位失败");
+                            //window.location = "/views/country.html";
+                            clearInterval(temp);
+                            if (request("City") != null) {
+                                City = request("City");
+                                CityId = request("CityId");
+                                $('#City').html(City);
+                            }
+                            if (!City) {
+                                City = "北京";
+                                CityId = "110100";
+                                $("#City").html(City);
+                                lnglatXY = [116.397428, 39.90923];
+                            }
+                            $scope.GetScenicList(City, lnglatXY, null, "");
+                            break;
+                    }
+                }, 1000);
+            }
+            // $scope.GetScenicList(City, lnglatXY, null, "");
+            //选项卡切换函数
+            $scope.changeTab = function() {
+
+                var aLi = document.querySelectorAll('.weChat-sort-rule li');
+                var oI = document.querySelector('.weChat-sort-rule i');
+                var iW = oI.offsetWidth;
+                var num = 0;
+
+                keyword = document.querySelector('#Seach').value;
+
+
+                for (var i = 0; i < aLi.length; i++) {
+                    (function(index) {
+                        aLi[index].addEventListener('click', function() {
+
+                            $(".weChat-foot").hide();
+                            mui('#refreshContainer').pullRefresh().scrollTo(0, 0, 1000); //滚动到顶部
+                            //window.scrollTo(0, 1000);
+                            window.scrollTo(0, 0);
+
+                            aLi[num].className = '';
+                            num = index;
+                            this.className = 'active';
+                            oI.style.left = num * iW + 'px';
+                            switch (num) {
+                                case 0:
+                                    IsTags = 2;
+                                    PageIndex = 1;
+                                    break;
+                                case 1:
+                                    IsTags = 3;
+                                    PageIndex = 1;
+                                    break;
+                            }
+                            arrayObj = new Array();
+                            $scope.GetScenicList(City, lnglatXY, null, "");
+
+                        }, false);
+                    })(i);
+                }
+            };
+            $scope.changeTab();
+        }]);
+
+        function Redirect() {
+            window.location = "/views/country.html";
+        }
+    </script>
+    <style>
+        .wrap {
+            background: #fff;
+        }
+        
+        .mui-content {
+            background: #fff;
+        }
+        
+        .mui-scroll {
+            padding: 0;
+        }
+        
+        .weChat-foot {
+            display: none;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .weChat-foot div {
+            width: .34rem;
+            height: .39rem;
+            margin-left: 1.7rem;
+            background: url(/imgs/sousuowujieguo@2x.png) no-repeat;
+            background-size: contain;
+        }
+        
+        .weChat-foot p {
+            text-align: center;
+            line-height: .4rem;
+            font-size: .14rem;
+            color: #666;
+        }
+        
+        .weChat-foot a {
+            display: inline-block;
+            width: .8rem;
+            height: .3rem;
+            margin-top: .1rem;
+            line-height: .3rem;
+            text-align: center;
+            color: #14bdf6;
+            border: 1px solid #14bdf6;
+            border-radius: 3px;
+        }
+        
+        .mui-spinner {
+            width: .12rem;
+            height: .12rem;
+            background: url(/imgs/shouye_shuaxinjiazaizhong@2x.png) no-repeat;
+            background-size: contain;
+        }
+        
+        .mui-spinner:after {
+            width: 0;
+        }
+        
+        .mui-pull-caption {
+            font-size: .12rem;
+            font-weight: normal;
+            color: #999;
+        }
+        
+        .mui-icon {
+            width: .12rem;
+            height: .12rem;
+            background: url(/imgs/shouye_shuaxinxiala@2x.png) no-repeat;
+            background-size: contain;
+            color: rgba(0, 0, 0, 0);
+        }
+        
+        .mui-content .mui-pull-top-pocket {
+            height: .55rem;
+            background: url(/imgs/shouye_xiahuaslogan@2x.png) no-repeat;
+            background-position-x: center;
+            background-size: 25%;
+            top: .15rem !important;
+        }
+    </style>
+</head>
+
+
+<body ng-controller="FunctionCarouselCtrl as fc">
+
+    <div id='container'></div>
+    <div id="tip"></div>
+
+    <div class="share-opacity animated">
+        <div class="qr-wrap">
+            <h3>关注链景旅行</h3>
+            <p>全世界的景点都在这里！没逗你！</p>
+            <img src="/imgs/gongzhonghaoerweima.jpg" alt="code">
+            <p>长按关注公众号听讲解</p>
+            <span></span>
+        </div>
+    </div>
+    <div class="weChat-search">
+        <div class="weChat-search-city">
+            <p><span onclick="Redirect();" id="City"></span><i class="icon-fx-down"></i></p>
+        </div>
+        <div class="weChat-search-scence">
+            <input type="text" id="Seach" placeholder="输入景区名">
+            <span></span>
+            <em class="icon-control-close"></em>
+            <i class="icon-top-search"></i>
+        </div>
+    </div>
+    <div class="wrap">
+
+        <div class="weChat-sort-rule">
+            <ul>
+                <li class="active">热门推荐<span></span></li>
+                <li>距离最近</li>
+            </ul>
+            <i></i>
+        </div>
+
+
+        <div class="weChat-foot">
+            <div></div>
+            <p>抱歉！没有找到相关结果</p>
+        </div>
+
+
+        <div class="weChat-refresh-bg">
+            <img src="/imgs/shouye_xiahuaslogan@2x.png" alt="">
+            <p><span></span><i>加载中...</i></p>
+        </div>
+
+        <div class="weChat-sort-list">
+            <div class="mui-content" id="mui-content">
+                <div id="refreshContainer" class="mui-content mui-scroll-wrapper">
+                    <div class="mui-scroll">
+                        <ul id="ullist" ng-repeat="item in data" on-finish-render-filters>
+                            <li id="{{item.Id}}" name="{{item.Name}}">
+                                <div class="img-con">
+                                    <img ng-src="{{item.ImgUrl}}" alt="">
+                                    <div class="bg-panel">
+                                        <h2 ng-bind="item.Name"></h2>
+                                        <p class="scenic-about">
+                                            <span ng-show="item.Grade!=0">{{item.Grade}}A</span>
+                                            <i ng-show="item.Grade!=0"></i>
+
+
+                                            <span ng-bind="item.Labels"></span>
+
+
+                                            <i ng-show="item.Distance!=0&&item.Labels!=''"></i>
+                                            <span ng-show="item.Distance!=0">{{item.Distance}}</span>
+                                        </p>
+                                        <p class="listen-count"><i class="icon-iconfont-playaudio"></i>{{item.PlayCount>10000?(item.PlayCount/10000| number:2)+'万':item.PlayCount}}人听</p>
+                                    </div>
+                                </div>
+                                <p class="scenic-introduce">{{item.Introduce}}</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="share-code" style=" -webkit-transition:all .4s ease; z-index:2;">
+        <i style=" background:url(/imgs/x.png) no-repeat; background-size:contain; position:absolute; left:0; top:0; width:.22rem; height:.22rem;"></i>
+        <img style="margin-left:.22rem;" src="/imgs/fenxiangerweimaguanzhu2@2x.png">
+        <p class="loadapp" style="width:3rem;"><img src="/imgs/logo@2x.png" alt="">下载链景旅行，免费听全球景点讲解</p>
+    </div>
+    <script>
+        //出现弹层和点击X消失
+        (function() {
+            var oWrap = document.querySelector('.scence-view');
+            var oCon = document.querySelector('.share-code');
+            var oX = document.querySelector('.share-code i');
+            var oBtn = document.querySelector('.share-code img');
+            var opacity = document.querySelector('.share-opacity');
+            var oQr = document.querySelector('.qr-wrap span');
+            var iBtn;
+
+
+            var load = document.querySelector('.loadapp');
+            load.addEventListener('tap', function() {
+                window.location = "http://download.yjly.com/yjly.aspx";
+            }, false);
+
+            oX.addEventListener('click', function() {
+                oCon.style.opacity = 0;
+                oWrap.style.bottom = 0;
+                //oCon.style.webkitTransform='translate3d(0,100px,0)';
+
+            }, false);
+            oCon.addEventListener('webkitTransitionEnd', function() {
+                this.style.display = 'none';
+            }, false);
+
+            oBtn.addEventListener('click', function() {
+                opacity.style.display = 'block';
+                if (!$(opacity).hasClass('fadeIn')) {
+                    $(opacity).addClass('fadeIn');
+                    $(opacity).removeClass('zoomOut');
+                }
+                iBtn = 1;
+            }, false);
+
+            oQr.addEventListener('click', function() {
+                if ($(opacity).hasClass('fadeIn')) {
+                    $(opacity).removeClass('fadeIn');
+                    $(opacity).addClass('zoomOut');
+                }
+                iBtn = 0;
+            }, false);
+
+            opacity.addEventListener('webkitAnimationEnd', function() {
+                if (iBtn) {
+                    opacity.style.display = 'block';
+                } else {
+                    opacity.style.display = 'none';
+                }
+            }, false);
+        })();
+    </script>
+</body>
+
+</html>
+<script type="text/javascript" src="/js/Position.js"></script>
