@@ -470,20 +470,20 @@
             top: 50%;
             left: 50%;
             margin: -1.45rem -1.34rem;
-            width: 2.69rem;
-            height: 2.9rem;
+            width: 2.7rem;
+            height: 3rem;
             background: #fff;
             border-radius: 10px;
             text-align: center;
-            background: url(/imgs/beijing.png) no-repeat;
-            background-size: cover;
+            /*  background: url(/imgs/beijing.png) no-repeat;
+                background-size: cover;*/
         }
         
         .share-opacity-pay .qr-wrap img {
-            width: 1rem;
-            height: 1rem;
-            border-radius: 10px;
-            border: 1px solid #ffffff;
+            width: 2.7rem;
+            height: 1.6rem;
+            border-radius: 10px 10px 0 0;
+            border: 0px solid #ffffff;
         }
         
         .share-opacity-pay .qr-wrap h3 {
@@ -494,15 +494,29 @@
         }
         
         .share-opacity-pay .qr-wrap h2 {
-            margin-top: .15rem;
-            margin-bottom: .05rem;
+            margin-top: .06rem;
+        }
+        
+        .share-opacity-pay .qr-wrap h2 span {
+            height: .15rem;
+            width: .37rem;
+            font-size: .11rem;
+            color: #36d74d;
+            background-color: #FFFFFF;
+            border: 1px solid #36d74d;
+            border-radius: 10px;
+        }
+        
+        .share-opacity-pay .qr-wrap h2 p {
             font-size: .12rem;
             color: #666666;
             text-decoration: line-through;
+            display: inline-block;
         }
         
         .share-opacity-pay .qr-wrap h1 {
-            margin-bottom: .2rem;
+            margin-top: .3rem;
+            margin-bottom: .3rem;
             font-size: .12rem;
             color: #000000;
         }
@@ -514,7 +528,7 @@
             color: #ffffff;
             background-color: #ff6f6f;
             border: 1px solid #ff6f6f;
-            border-radius: .04rem;
+            border-radius: 10px;
         }
         
         .share-opacity-pay .qr-wrap button {
@@ -536,24 +550,34 @@
         
         .share-opacity-pay .qr-wrap em.btn {
             position: absolute;
-            left: 50%;
-            top: 50%;
+            left: .35rem;
+            top: 1.525rem;
             margin: -0.15rem;
-            width: .3rem;
-            height: .3rem;
-            background: url(/imgs/jingdianbofang@2x.png) no-repeat;
+            width: .5rem;
+            height: .5rem;
+            background: url(/imgs/bofang.png) no-repeat;
             background-size: contain;
+            z-index: 11;
         }
         
         .share-opacity-pay .qr-wrap em.btn.active {
             position: absolute;
-            left: 50%;
-            top: 50%;
+            left: .35rem;
+            top: 1.525rem;
             margin: -0.15rem;
-            width: .3rem;
-            height: .3rem;
-            background: url(/imgs/jigndianzanting@2x.png) no-repeat;
+            width: .5rem;
+            height: .5rem;
+            background: url(/imgs/zanting.png) no-repeat;
             background-size: contain;
+            z-index: 11;
+        }
+        
+        .scenicName {
+            position: absolute;
+            font-size: .14rem;
+            left: .9rem;
+            top: 1.38rem;
+            color: #FFFFFF;
         }
     </style>
 </head>
@@ -575,19 +599,25 @@
         </div>
     </div>
 
+
     <div class="share-opacity-pay animated fadeIn">
         <div class="qr-wrap">
-            <h3>{{ScenicInfoData.Name}}</h3>
             <div style="position: relative;">
                 <audio id="music2" loop="loop">你的浏览器不支持audio标签。</audio>
                 <em class="btn" ng-class="{true: 'active'}[isPlay]" ng-click="play()"></em>
                 <img ng-src="{{ScenicInfoData.ImgUrl}}" alt="code">
+                <img style="position: absolute;top:0;left: 0;" src="/imgs/mengceng.png" alt="code">
+                <span class="scenicName">{{ScenicInfoData.Name}}</span>
             </div>
-            <h2>原价：20元</h2>
-            <h1><span>10元 </span>&nbsp;畅听整个景区</h1>
+            <h2>&nbsp;&nbsp;&nbsp;&nbsp;<span>&nbsp;&nbsp;试听&nbsp;&nbsp;</span>&nbsp;&nbsp;&nbsp;
+                <p>原价：20元</p>
+            </h2>
+            <h1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>&nbsp;&nbsp;10元&nbsp;&nbsp;</span>&nbsp;畅听整个景区</h1>
             <button ng-click="toPay()">&nbsp;立即购买&nbsp;</button>
         </div>
     </div>
+
+
 
     <div class="wrap">
         <div id="slider" class="mui-slider">
