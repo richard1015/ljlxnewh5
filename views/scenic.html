@@ -219,7 +219,7 @@
                         })(i);
                     }
                     aBtn[aBtn.length - 1].addEventListener('tap', function() {
-                        window.location.href = "/views/scenicSpot.html?ID=" + id + "&name=" + escape(rname) + "&pid=" + id + "&code=" + code;
+                        window.location.href = "/views/scenicSpot.html?ID=" + this.id + "&name=" + escape(rname) + "&pid=" + id + "&code=" + code;
                     }, false);
 
                 })();
