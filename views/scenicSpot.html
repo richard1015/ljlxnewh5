@@ -175,13 +175,11 @@
 
                     if (data.State == 0) {
                         var jsonData = data.Value;
+                        RPID = jsonData.PId;
                         if (!jsonData.IsFree) { // ture 不收费，false 收费
                             init();
                         }
                         $("#Introduce").text(jsonData.Introduce);
-
-                        RPID = jsonData.PId;
-
                         $("#ScenicName").text(jsonData.SName);
                         if (jsonData.Audios.length > 0) {
                             $("#audioID").attr("src", jsonData.Audios[0].AudioUrl);
