@@ -30,8 +30,6 @@
         var Lon = "";
         var Lat = "";
         var ID = request("ID");
-        var PID = 0;
-
         var AreaID = "";
 
         var RPID = request("pid");
@@ -182,7 +180,7 @@
                         }
                         $("#Introduce").text(jsonData.Introduce);
 
-
+                        RPID = jsonData.PId;
 
                         $("#ScenicName").text(jsonData.SName);
                         if (jsonData.Audios.length > 0) {
