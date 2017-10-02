@@ -43,12 +43,12 @@
             document.title = "";
         }
         //监听幻灯片
-        app.directive('onFinishRenderFilters', function($timeout) {
+        app.directive('onFinishRenderFilters', function ($timeout) {
             return {
                 restrict: 'A',
-                link: function(scope, element, attr) {
+                link: function (scope, element, attr) {
                     if (scope.$last === true) {
-                        $timeout(function() {
+                        $timeout(function () {
                             scope.$emit('ngRepeatFinished');
                         });
                     }
@@ -57,12 +57,12 @@
         });
 
         //播放
-        app.directive('onFinishRenderFiltersBofang', function($timeout) {
+        app.directive('onFinishRenderFiltersBofang', function ($timeout) {
             return {
                 restrict: 'A',
-                link: function(scope, element, attr) {
+                link: function (scope, element, attr) {
                     if (scope.$last === true) {
-                        $timeout(function() {
+                        $timeout(function () {
                             scope.$emit('ngRepeatFinished1');
                         });
                     }
@@ -71,9 +71,9 @@
         });
 
         //成功加载定位后调用方法
-        app.controller("FunctionCarouselCtrl", ['$scope', '$http', '$sce', function($scope, $http, $sce) {
+        app.controller("FunctionCarouselCtrl", ['$scope', '$http', '$sce', function ($scope, $http, $sce) {
             //监听幻灯片
-            $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
+            $scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
 
                 var slider = mui("#slider");
                 slider.slider({
@@ -84,7 +84,7 @@
 
             });
             var arrayObj = new Array();
-            $scope.GetScenicInfo = function() {
+            $scope.GetScenicInfo = function () {
                 var obj = new Object();
                 obj.ScenicId = id;
 
@@ -92,7 +92,7 @@
                 $http.post(url, {
                     cmd: "H5ScenicDetailsById",
                     param: JSON.stringify(obj)
-                }).success(function(data) {
+                }).success(function (data) {
                     if (data.State == 0) {
                         $scope.ScenicInfoData = data.Value;
                         if (!$scope.ScenicInfoData.IsFree) { // ture 不收费，false 收费
@@ -107,7 +107,7 @@
             }
             $scope.titlestr = "";
             //定义异步加载数据方法
-            $scope.GetScenicList = function(jr, type) {
+            $scope.GetScenicList = function (jr, type) {
                 if (type != "down") {
                     $(".wrap").hide();
                 }
@@ -122,7 +122,7 @@
                 $http.post(url, {
                     cmd: "H5ScenicDetailsWillListen",
                     param: JSON.stringify(obj)
-                }).success(function(data) {
+                }).success(function (data) {
                     $(".wrap").show();
                     if (type == "down") {
                         jr.endPullupToRefresh(false);
@@ -150,8 +150,8 @@
                         //兼容微信模式
                         var $body = $('body');
                         var $iframe = $('<iframe src="/favicon.ico"></iframe>');
-                        $iframe.on('load', function() {
-                            setTimeout(function() {
+                        $iframe.on('load', function () {
+                            setTimeout(function () {
                                 $iframe.off('load').remove();
                                 // 临时需求 和合作方演示实例
                                 if (id == 1) {
@@ -179,13 +179,13 @@
             //    arrayObj = new Array();;
             //    $scope.GetScenicList(null, "up");
             //};
-            $scope.pullDownFresh = function() {
+            $scope.pullDownFresh = function () {
 
                 var _this = this;
                 PageIndex += 1;
                 $scope.GetScenicList(_this, "down");
             }
-            $scope.loadjiazai = function() {
+            $scope.loadjiazai = function () {
                 mui.init({
                     pullRefresh: {
                         container: "#refreshContainer", //下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
@@ -206,19 +206,19 @@
             };
 
             //绑定完数据添加监听
-            $scope.$on('ngRepeatFinished1', function(ngRepeatFinishedEvent) {
-                (function() {
+            $scope.$on('ngRepeatFinished1', function (ngRepeatFinishedEvent) {
+                (function () {
                     var aBtn = document.querySelectorAll('.scence-list li');
 
                     for (var i = 0; i < aBtn.length - 1; i++) {
-                        (function(index) {
-                            aBtn[index].addEventListener('tap', function() {
+                        (function (index) {
+                            aBtn[index].addEventListener('tap', function () {
                                 window.location.href = "/views/scenicSpot.html?ID=" + this.id + "&name=" + escape(rname) + "&pid=" + id + "&code=" + code;
 
                             }, false);
                         })(i);
                     }
-                    aBtn[aBtn.length - 1].addEventListener('tap', function() {
+                    aBtn[aBtn.length - 1].addEventListener('tap', function () {
                         window.location.href = "/views/scenicSpot.html?ID=" + this.id + "&name=" + escape(rname) + "&pid=" + id + "&code=" + code;
                     }, false);
 
@@ -233,7 +233,7 @@
 
             var that = {};
 
-            $scope.toPay = function() {
+            $scope.toPay = function () {
 
                 if (that.requestState) {
                     return;
@@ -246,7 +246,7 @@
                 $http.post(url, {
                     cmd: "OpenBuyScenicAlnumOrder",
                     param: JSON.stringify(obj)
-                }).success(function(data) {
+                }).success(function (data) {
                     if (data.State == "0") {
                         var res = data.Value;
                         var AppId = res.appId,
@@ -265,7 +265,7 @@
                                     "signType": "MD5", //微信签名方式：
                                     "paySign": PaySign //微信签名
                                 },
-                                function(res) {
+                                function (res) {
                                     that.requestState = false;
                                     if (res.err_msg == "get_brand_wcpay_request:ok") {
                                         alert("支付成功！");
@@ -285,13 +285,13 @@
                             onBridgeReady();
                         }
                     }
-                }, function(data) {
+                }, function (data) {
                     console.log(data);
                 });
             }
             $scope.isPlay = false;
-            $scope.play = function() {
-                var music = document.getElementById('music2');
+            var music = document.getElementById('music2');
+            $scope.play = function () {
                 music.src = $scope.ScenicInfoData.AudioUrl;
                 if (!$scope.isPlay) {
                     music.play();
@@ -299,59 +299,76 @@
                     music.pause();
                 }
                 $scope.isPlay = !$scope.isPlay;
-            }
+                $scope.$apply();
 
-            var init = function() {
-                    if (!code) {
-                        window.location.href = "https://share.lianjinglx.com/wxAuth.html?backUrl=" + window.location.href;
-                    } else {
-                        var obj = new Object();
-                        obj.SId = $scope.scenicID;
-                        obj.Code = code;
-                        var url = "/serverH5";
-                        $http.post(url, {
-                            cmd: "H5ScenicIsBuy",
-                            param: JSON.stringify(obj)
-                        }).success(function(data) {
-                            if (data.State == 0) {
-                                //用户是否已经购买
-                                if (data.Value) {
-                                    $(".share-opacity-pay").hide();
-                                }
-                            } else {
-                                window.location.href = "/views/scenic.html?id=" + $scope.scenicID;
-                            }
-                        });
+            }
+            document.addEventListener("WeixinJSBridgeReady", function () {
+                WeixinJSBridge.invoke('getNetworkType', {}, function (e) {
+                    if (music.paused) {
+                        music.play();
                     }
+                    /*else{
+                                        oAu.pause();
+                                    }*/
+
+                });
+            }, false);
+
+            var init = function () {
+                if (!code) {
+                    window.location.href = "https://share.lianjinglx.com/wxAuth.html?backUrl=" + window.location.href;
+                } else {
+                    var obj = new Object();
+                    obj.SId = $scope.scenicID;
+                    obj.Code = code;
+                    var url = "/serverH5";
+                    $http.post(url, {
+                        cmd: "H5ScenicIsBuy",
+                        param: JSON.stringify(obj)
+                    }).success(function (data) {
+                        if (data.State == 0) {
+                            //用户是否已经购买
+                            if (data.Value) {
+                                $(".share-opacity-pay").hide();
+                            } else {
+                                setTimeout(function () {
+                                    $scope.play();
+                                }, 2500);
+                            }
+                        } else {
+                            window.location.href = "/views/scenic.html?id=" + $scope.scenicID;
+                        }
+                    });
                 }
-                // 张掖平山湖大峡谷-山丹大佛寺-马蹄寺
-                // 29694-69639-61789
-                // if ($scope.scenicID == "29694" || $scope.scenicID == "69639" || $scope.scenicID == "61789") {
-                //     $(".share-opacity-pay").show();
-                //     init();
-                // }
-                //$scope.GetScenicList('北京', [126.605516, 43.87596]);
+            }
+            // 张掖平山湖大峡谷-山丹大佛寺-马蹄寺
+            // 29694-69639-61789
+            // if ($scope.scenicID == "29694" || $scope.scenicID == "69639" || $scope.scenicID == "61789") {
+            //     $(".share-opacity-pay").show();
+            //     init();
+            // }
+            //$scope.GetScenicList('北京', [126.605516, 43.87596]);
         }]);
     </script>
     <style>
         .wrap {
             top: 0;
         }
-        
+
         .mui-table-view {
             height: .44rem;
             border-bottom: 1px solid #e8e8e8;
         }
-        
+
         .mui-slider,
         .mui-slider .mui-slider-group .mui-slider-item img {
             height: 1.68rem;
         }
-        
+
         .mui-slider {
             position: relative;
         }
-        
+
         .mui-badge-danger,
         .mui-badge-red {
             background: none;
@@ -359,17 +376,17 @@
             font-size: .14rem;
             right: .24rem !important;
         }
-        
+
         .mui-navigate-right:after,
         .mui-push-right:after {
             right: .1rem;
             font-size: .18rem;
         }
-        
+
         .mui-table-view-cell>a:not(.mui-btn) {
             margin: -.08rem -.18rem;
         }
-        
+
         .scence-view {
             position: fixed;
             top: 1.76rem;
@@ -378,23 +395,23 @@
             overflow: auto;
             background: #fff;
         }
-        
+
         .mui-scroll {
             padding: 0;
         }
-        
+
         .scence-list {
             background: #fff;
         }
-        
+
         .mui-scroll-wrapper {
             top: .55rem;
         }
-        
+
         .mui-pull-top-pocket {
             background: #fff;
         }
-        
+
         .mui-table-view li {
             float: left;
             position: relative;
@@ -403,7 +420,7 @@
             line-height: .44rem;
             text-align: center;
         }
-        
+
         .mui-table-view a {
             position: absolute;
             left: 0;
@@ -411,7 +428,7 @@
             width: 100%;
             height: 100%;
         }
-        
+
         .mui-table-view i {
             position: absolute;
             top: .12rem;
@@ -419,24 +436,24 @@
             height: .16rem;
             left: .45rem;
         }
-        
+
         .mui-spinner {
             width: .12rem;
             height: .12rem;
             background: url(/imgs/shouye_shuaxinjiazaizhong@2x.png) no-repeat;
             background-size: contain;
         }
-        
+
         .mui-spinner:after {
             width: 0;
         }
-        
+
         .mui-pull-caption {
             font-size: .12rem;
             font-weight: normal;
             color: #999;
         }
-        
+
         .mui-icon {
             width: .12rem;
             height: .12rem;
@@ -444,7 +461,7 @@
             background-size: contain;
             color: rgba(0, 0, 0, 0);
         }
-        
+
         .mui-content .mui-pull-top-pocket {
             height: .55rem;
             background: url(/imgs/shouye_xiahuaslogan@2x.png) no-repeat;
@@ -464,7 +481,7 @@
             z-index: 501;
             display: none;
         }
-        
+
         .share-opacity-pay .qr-wrap {
             position: absolute;
             top: 50%;
@@ -478,25 +495,25 @@
             /*  background: url(/imgs/beijing.png) no-repeat;
                 background-size: cover;*/
         }
-        
+
         .share-opacity-pay .qr-wrap img {
             width: 2.7rem;
             height: 1.6rem;
             border-radius: 10px 10px 0 0;
             border: 0px solid #ffffff;
         }
-        
+
         .share-opacity-pay .qr-wrap h3 {
             margin-top: .3rem;
             margin-bottom: .22rem;
             font-size: .16rem;
             color: #ffffff;
         }
-        
+
         .share-opacity-pay .qr-wrap h2 {
             margin-top: .06rem;
         }
-        
+
         .share-opacity-pay .qr-wrap h2 span {
             height: .15rem;
             width: .37rem;
@@ -506,21 +523,21 @@
             border: 1px solid #36d74d;
             border-radius: 10px;
         }
-        
+
         .share-opacity-pay .qr-wrap h2 p {
             font-size: .12rem;
             color: #666666;
             text-decoration: line-through;
             display: inline-block;
         }
-        
+
         .share-opacity-pay .qr-wrap h1 {
             margin-top: .3rem;
             margin-bottom: .3rem;
             font-size: .12rem;
             color: #000000;
         }
-        
+
         .share-opacity-pay .qr-wrap h1 span {
             height: .15rem;
             width: .37rem;
@@ -530,7 +547,7 @@
             border: 1px solid #ff6f6f;
             border-radius: 10px;
         }
-        
+
         .share-opacity-pay .qr-wrap button {
             display: inline-block;
             width: 1.7rem;
@@ -547,7 +564,7 @@
             opacity: .9;
             border-radius: .16rem;
         }
-        
+
         .share-opacity-pay .qr-wrap em.btn {
             position: absolute;
             left: .35rem;
@@ -559,7 +576,7 @@
             background-size: contain;
             z-index: 11;
         }
-        
+
         .share-opacity-pay .qr-wrap em.btn.active {
             position: absolute;
             left: .35rem;
@@ -571,7 +588,7 @@
             background-size: contain;
             z-index: 11;
         }
-        
+
         .scenicName {
             position: absolute;
             font-size: .14rem;
@@ -710,7 +727,7 @@
     </div>
     <script>
         //出现弹层和点击X消失
-        (function() {
+        (function () {
             var oWrap = document.querySelector('.scence-view');
             var oCon = document.querySelector('.share-code');
             var oX = document.querySelector('.share-code i');
@@ -721,21 +738,21 @@
 
 
             var load = document.querySelector('.loadapp');
-            load.addEventListener('tap', function() {
+            load.addEventListener('tap', function () {
                 window.location = "http://download.yjly.com/yjly.aspx";
             }, false);
 
-            oX.addEventListener('click', function() {
+            oX.addEventListener('click', function () {
                 oCon.style.opacity = 0;
                 oWrap.style.bottom = 0;
                 //oCon.style.webkitTransform='translate3d(0,100px,0)';
 
             }, false);
-            oCon.addEventListener('webkitTransitionEnd', function() {
+            oCon.addEventListener('webkitTransitionEnd', function () {
                 this.style.display = 'none';
             }, false);
 
-            oBtn.addEventListener('click', function() {
+            oBtn.addEventListener('click', function () {
                 opacity.style.display = 'block';
                 if (!$(opacity).hasClass('fadeIn')) {
                     $(opacity).addClass('fadeIn');
@@ -744,7 +761,7 @@
                 iBtn = 1;
             }, false);
 
-            oQr.addEventListener('click', function() {
+            oQr.addEventListener('click', function () {
                 if ($(opacity).hasClass('fadeIn')) {
                     $(opacity).removeClass('fadeIn');
                     $(opacity).addClass('zoomOut');
@@ -752,7 +769,7 @@
                 iBtn = 0;
             }, false);
 
-            opacity.addEventListener('webkitAnimationEnd', function() {
+            opacity.addEventListener('webkitAnimationEnd', function () {
                 if (iBtn) {
                     opacity.style.display = 'block';
                 } else {
